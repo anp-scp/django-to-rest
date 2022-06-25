@@ -1,3 +1,4 @@
 *.tar.gz.
 /dist
 /django_to_rest.egg-info
+/virtualenv
