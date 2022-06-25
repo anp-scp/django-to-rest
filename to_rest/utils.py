@@ -23,7 +23,7 @@ def restifyApp(appName, relativeUri):
     for entity in cfg.restifyRegistry:
         model = apps.get_app_config(appName).get_model(entity)
         customSerializer = cfg.restifyRegistry[entity][constants.CUSTOM_SERIALIZER]
-        customViews = cfg.restifyRegistry[entity][constants.CUSTOM_VIEWS]
+        customViewParams = cfg.restifyRegistry[entity][constants.CUSTOM_VIEW_PARAMS]
         excludedFields = cfg.restifyRegistry[entity][constants.EXCLUDE_FIELDS]
         methodFields = cfg.restifyRegistry[entity][constants.METHOD_FIELDS]
         searchFields = cfg.restifyRegistry[entity][constants.SEARCH_FIELDS]
@@ -32,8 +32,8 @@ def restifyApp(appName, relativeUri):
             modelSerializer = restifySerializer.createModelSerializers(model, excludedFields, methodFields)
         else:
             modelSerializer = customSerializer
-        ObjectListView =  views.createObjectListView(model, modelSerializer, customViews)
-        ObjectDetailView =  views.createObjectDetailView(model, modelSerializer, customViews)
+        ObjectListView =  views.createObjectListView(model, modelSerializer, customViewParams)
+        ObjectDetailView =  views.createObjectDetailView(model, modelSerializer, customViewParams)
 
         paths.append(path(relativeUri + "/" + model.__name__.lower(), ObjectListView.as_view()))
         paths.append(path(relativeUri + "/" + model.__name__.lower() + "/<int:pk>", ObjectDetailView.as_view()))

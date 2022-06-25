@@ -4,7 +4,7 @@ from . import constants
 from . import cfg
 import logging
 
-def restifyModel(_cls=None, *, customViews=None, excludeFields=None, searchFields=None, methodFields=None, customSerialier=None):
+def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, searchFields=None, methodFields=None, customSerialier=None):
     """
     A decorator function to include the models in the registry so that the decorated models
     are marked for restification.
@@ -33,7 +33,7 @@ def restifyModel(_cls=None, *, customViews=None, excludeFields=None, searchField
             except KeyError:
                 logging.info("restify.decorators.restifyModel.decorator_restifyModel:: Performing registration for :" + cls.__name__)
                 options = {}
-                options[constants.CUSTOM_VIEWS] = customViews
+                options[constants.CUSTOM_VIEW_PARAMS] = customViewParams
                 options[constants.EXCLUDE_FIELDS] = excludeFields
                 options[constants.SEARCH_FIELDS] = searchFields
                 options[constants.METHOD_FIELDS] = methodFields

@@ -1,77 +1,48 @@
-from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import generics
 from . import constants
 
-def createObjectListView(model, modelSerializer, customViews):
-    #getList
-    def get(self, request, format=None):
-        objects = model.objects.all()
+def createObjectListView(model, modelSerializer, customViewParams):
+    def list(self, request, *args, **kwargs):
+        objects = self.get_queryset()
         serializer = modelSerializer(objects, many=True)
         if len(objects) == 0:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            headers = {}
+            headers[constants.CONTENT_MESSAGE] = constants.NO_OBJECT_EXISTS.format(model.__name__)
+            return Response(status=status.HTTP_204_NO_CONTENT, headers=headers)
         else:
             return Response(serializer.data)
-    #create
-    def post(self, request, format=None):
-        serializer = modelSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status = status.HTTP_201_CREATED)
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
     attributes = {}
-    if customViews is not None and customViews[constants.GET_OBJECT_LIST] is not None:
-        attributes["get"] = customViews[constants.GET_OBJECT_LIST]
+    attributes["queryset"] = model.objects.all()
+    attributes["serializer_class"] = modelSerializer
+    if customViewParams is not None and customViewParams[constants.GET_OBJECT_METHOD] is not None:
+        attributes["get_object"] = customViewParams[constants.GET_OBJECT_METHOD]
+    if customViewParams is not None and customViewParams[constants.GET_QUERYSET_METHOD] is not None:
+        attributes["get_queryset"] = customViewParams[constants.GET_QUERYSET_METHOD]
+    if customViewParams is not None and customViewParams[constants.LIST_METHOD] is not None:
+        attributes["list"] = customViewParams[constants.LIST_METHOD]
     else:
-        attributes["get"] = get
-    if customViews is not None and customViews[constants.CREATE_OBJECT] is not None:
-        attributes["post"] = customViews[constants.CREATE_OBJECT]
-    else:
-        attributes["post"] = post
-    viewCls = type(model.__name__ + "_ObjectListView", (APIView,), attributes)
+        attributes["list"] = list
+    if customViewParams is not None and customViewParams[constants.CREATE_METHOD] is not None:
+        attributes["create"] = customViewParams[constants.CREATE_METHOD]
+    viewCls = type(model.__name__ + "ListView", (generics.ListCreateAPIView,), attributes)
     return viewCls
 
-def createObjectDetailView(model, modelSerializer, customViews):
-    #get the object
-    def get_object(self,pk):
-        try:
-            return model.objects.get(pk=pk)
-        except model.DoesNotExist:
-            raise Http404
-    
-    def get(self, request, pk, format=None):
-        modelObject = self.get_object(pk)
-        serializer = modelSerializer(modelObject)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        modelObject = self.get_object(pk)
-        serializer = modelSerializer(modelObject, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        modelObject = self.get_object(pk)
-        modelObject.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
+def createObjectDetailView(model, modelSerializer, customViewParams):  
     attributes = {}
-    if customViews is not None and customViews[constants.GET_OBJECT] is not None:
-        attributes["get"] = customViews[constants.GET_OBJECT]
-    else:
-        attributes["get_object"] = get_object
-        attributes["get"] = get
-    if customViews is not None and customViews[constants.UPDATE_OBJECT] is not None:
-        attributes["put"] = customViews[constants.UPDATE_OBJECT]
-    else:
-        attributes["put"] = put
-    if customViews is not None and customViews[constants.DELETE_OBJECT] is not None:
-        attributes["delete"] = customViews[constants.DELETE_OBJECT]
-    else:
-        attributes["delete"] = delete
-
-    viewCls = type(model.__name__ + "_ObjectDetailView", (APIView,), attributes)
+    attributes["queryset"] = model.objects.all()
+    attributes["serializer_class"] = modelSerializer
+    if customViewParams is not None and customViewParams[constants.GET_OBJECT_METHOD] is not None:
+        attributes["get_object"] = customViewParams[constants.GET_OBJECT_METHOD]
+    if customViewParams is not None and customViewParams[constants.GET_QUERYSET_METHOD] is not None:
+        attributes["get_queryset"] = customViewParams[constants.GET_QUERYSET_METHOD]
+    if customViewParams is not None and customViewParams[constants.RETREIVE_METHOD] is not None:
+        attributes["retrieve"] = customViewParams[constants.RETREIVE_METHOD]
+    if customViewParams is not None and customViewParams[constants.UPDATE_METHOD] is not None:
+        attributes["update"] = customViewParams[constants.UPDATE_METHOD]
+    if customViewParams is not None and customViewParams[constants.DESTROY_METHOD] is not None:
+        attributes["destroy"] = customViewParams[constants.DESTROY_METHOD]
+    viewCls = type(model.__name__ + "DetailView", (generics.RetrieveUpdateDestroyAPIView,), attributes)
     return viewCls
