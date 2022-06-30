@@ -60,7 +60,6 @@ def restifyApp(appName, relativeUri):
                             viewSetAttributes[x.__name__] = customActions[x.__name__]
                             del customActions[x.__name__]
                         else:
-                            print(x.__name__)
                             viewSetAttributes[x.__name__] = x
                 elif defaultAction[0] == "manyToManyActionFactory":
                     action = views.manyToManyActionFactory(defaultAction[1],defaultAction[2],defaultAction[3])
