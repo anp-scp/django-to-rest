@@ -6,8 +6,36 @@ from django.db.models.fields.reverse_related import OneToOneRel, ManyToOneRel, M
 from to_rest import cfg
 
 def createModelSerializers(appName, model, excludedFields, methodFields, requiredReverseRelFields):
+    """
+    Method to create model serializers for the models marked for restification.
+
+    Parameters:
+
+        appName (str): Name of the app where the model belongs to.
+
+        model (django.db.models.Model): The model itself
+
+        excludedFields (list): The list of fields to be excluded
+
+        requiredReverseRelFields (list): One to One reverse fields to be made required.  
+
+    Returns:
+
+        serializer (rest_framework.serializers.ModelSerializer)
+    """
 
     def methodFieldsFactory(methodName):
+        """
+        Method to create seriaizer method for additional method fields
+
+        Parameters:
+
+            methodName (str): name of the method field
+
+        Returns:
+
+            func object
+        """
         def func(self,object):
             temp = eval("object." + methodName + "()")
             return temp
@@ -15,6 +43,22 @@ def createModelSerializers(appName, model, excludedFields, methodFields, require
         return func
     
     def relationalMethodFieldsFactory(appName, model, fieldName):
+        """
+        Method to create a serializer method for creating a url for the relational fields
+        in case of one to many and many to many relation
+
+        Parameters:
+
+            appName (str): name of the app
+
+            model (django.db.models.Model): model for which the serializer method is created.
+
+            fieldName (str): Name of the relational field
+
+        Returns:
+
+            func object
+        """
         def func(self,object):
             tempName = model.__name__.lower()
             return(reverse(appName + ":" + tempName + "-" + tempName + "-" + fieldName + "-list", args = [object.pk] ))
@@ -26,13 +70,12 @@ def createModelSerializers(appName, model, excludedFields, methodFields, require
             map[fieldName] = {'required': False}
     
     fields = []
-    ##todo create urls for relational fields
     relationalFields = []
     for field in model._meta.get_fields():
         if excludedFields is not None and field.name in excludedFields:
             continue
         elif field.is_relation:
-            if cfg.restifyRegistry[field.related_model.__name__] is not None:
+            if cfg.djangoToRestRegistry[field.related_model.__name__] is not None:
                 relationalFields.append(field)
         else:
             fields.append(field.name)
@@ -41,7 +84,6 @@ def createModelSerializers(appName, model, excludedFields, methodFields, require
     #create meta attributes for the meta class
     metaAttributes = {}
     metaAttributes["model"] = model
-    #create meta class for the serializer class
     
     #create attributes for serializer class
     serializerAttribute = {}
@@ -74,11 +116,13 @@ def createModelSerializers(appName, model, excludedFields, methodFields, require
             serializerAttribute["get_"+temp] = relationalMethodFieldsFactory(appName, model, temp)
             fields.append(temp)
             defaultActions.append(("manyToManyActionFactory", model, relationalField,temp))
-    cfg.restifyRegistry[model.__name__][constants.DEFAULT_ACTIONS] = defaultActions
+            #in the above if conditions, certain tuples are added to defaultActions to create
+            #corresponding action for the one to many and many to many fields
+    cfg.djangoToRestRegistry[model.__name__][constants.DEFAULT_ACTIONS] = defaultActions
     metaAttributes["fields"] = fields
     metaAttributes["extra_kwargs"] = reqFields
     meta = type("Meta", (object,), metaAttributes)
-    serializerAttribute["Meta"] = meta
+    serializerAttribute["Meta"] = meta #create meta class for the serializer class
 
     if methodFields is not None:
         for methodField in methodFields:

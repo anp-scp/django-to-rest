@@ -32,3 +32,4 @@ CONTENT_MESSAGE = "Content-Message"
 #messages
 NOT_A_MODEL_CLASS_MSG = "The decorated class must be a sub class django.db.models.Model"
 NO_OBJECT_EXISTS = "No {} object exists"
+TYPE_ERROR_MESSAGE = "{}: Expected {} but got {}"
