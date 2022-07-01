@@ -56,7 +56,7 @@ def restifyApp(appName, relativeUri):
                         serializer = customSerializer
                     action = views.oneToManyActionFactory(defaultAction[1],serializer,defaultAction[3], defaultAction[4])
                     for x in action:
-                        if customActions is not None and customActions[x.__name__] is not None:
+                        if customActions is not None and customActions.get(x.__name__, None) is not None:
                             viewSetAttributes[x.__name__] = customActions[x.__name__]
                             del customActions[x.__name__]
                         else:
@@ -64,7 +64,7 @@ def restifyApp(appName, relativeUri):
                 elif defaultAction[0] == "manyToManyActionFactory":
                     action = views.manyToManyActionFactory(defaultAction[1],defaultAction[2],defaultAction[3])
                     for x in action:
-                        if customActions is not None and customActions[x.__name__] is not None:
+                        if customActions is not None and customActions.get(x.__name__,None) is not None:
                             viewSetAttributes[x.__name__] = customActions[x.__name__]
                             del customActions[x.__name__]
                         else:
@@ -72,7 +72,7 @@ def restifyApp(appName, relativeUri):
         if customActions is not None:
             for customAction in customActions:
                 viewSetAttributes[customAction] = customActions[customAction]
-        viewSet = type("Restify_" + entity + "ViewSet", (ModelViewSet,), viewSetAttributes)
+        viewSet = type(constants.PROJECT_NAME_PREFIX + entity + "ViewSet", (ModelViewSet,), viewSetAttributes)
         cfg.restifyRegistry[entity][constants.DEFAULT_VIEW_SET] = viewSet
         router.register(prefix=r'{}/{}'.format(relativeUri, entity.lower()), viewset=viewSet, basename=entity.lower())
         

@@ -85,6 +85,6 @@ def createModelSerializers(appName, model, excludedFields, methodFields, require
             serializerAttribute[methodField] = serializers.SerializerMethodField(read_only=True)
             serializerAttribute["get_" + methodField] = methodFieldsFactory(methodField)
     
-    modelSerializer = type("Restify_" + model.__name__, (serializers.ModelSerializer,), serializerAttribute)
+    modelSerializer = type(constants.PROJECT_NAME_PREFIX + model.__name__, (serializers.ModelSerializer,), serializerAttribute)
     
     return modelSerializer

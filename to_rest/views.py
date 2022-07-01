@@ -6,7 +6,6 @@ from django.db.models.fields.reverse_related import ManyToManyRel
 from to_rest import constants
 
 def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
-    """for our purpose only"""
     childModel = field.model
     parentModelName = parentModel.__name__
 
@@ -25,12 +24,11 @@ def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
             serializer = childSerializer(childObjects, many=True)
             return Response(serializer.data)
     
-    funcRelatedList.__name__ = "oneToManyList_" + relatedName
+    funcRelatedList.__name__ = constants.ONE_TO_MANY_LIST_ACTION + relatedName
     funcRelatedList = action(detail=True, methods=['get'], url_path=relatedName, url_name=parentModelName.lower() + "-" + relatedName +"-list")(funcRelatedList)
     return (funcRelatedList,)
 
 def manyToManyActionFactory(parentModel, field, relatedName):
-    """for our purpose only"""
     throughModel = eval("parentModel.{}.through".format(relatedName))
     throughModelName = throughModel.__name__
     parentModelName = parentModel.__name__
@@ -71,7 +69,7 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     
-    funcRelatedList.__name__ = "manyToManyList_" + relatedName
+    funcRelatedList.__name__ = constants.MANY_TO_MANY_LIST_ACTION + relatedName
     funcRelatedList = action(detail=True, methods=['get', 'post'], url_path=relatedName, url_name=parentModelName.lower() + "-" + relatedName +"-list")(funcRelatedList)
 
     def funcRelatedDetail(self,request,childPk,pk=None):
@@ -106,7 +104,7 @@ def manyToManyActionFactory(parentModel, field, relatedName):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
-    funcRelatedDetail.__name__ = "manyToManyDetail_" + relatedName
+    funcRelatedDetail.__name__ = constants.MANY_TO_MANY_DETAIL_ACTION + relatedName
     funcRelatedDetail = action(detail=True, methods=['put','patch','delete'], url_path=relatedName + "/(?P<childPk>.+)", url_name=parentModelName.lower() + "-" + relatedName +"-detail")(funcRelatedDetail)
     
     return (funcRelatedList, funcRelatedDetail)
@@ -130,20 +128,22 @@ def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
     attributes = {}
     attributes["queryset"] = model.objects.all()
     attributes["serializer_class"] = modelSerializer
-    if customViewParams is not None and customViewParams[constants.GET_OBJECT_METHOD] is not None:
+    if customViewParams is not None and customViewParams.get(constants.GET_OBJECT_METHOD, None) is not None:
         attributes["get_object"] = customViewParams[constants.GET_OBJECT_METHOD]
-    if customViewParams is not None and customViewParams[constants.GET_QUERYSET_METHOD] is not None:
+    if customViewParams is not None and customViewParams.get(constants.GET_QUERYSET_METHOD, None) is not None:
         attributes["get_queryset"] = customViewParams[constants.GET_QUERYSET_METHOD]
-    if customViewParams is not None and customViewParams[constants.LIST_METHOD] is not None:
+    if customViewParams is not None and customViewParams.get(constants.LIST_METHOD, None) is not None:
         attributes["list"] = customViewParams[constants.LIST_METHOD]
     else:
         attributes["list"] = list
-    if customViewParams is not None and customViewParams[constants.CREATE_METHOD] is not None:
+    if customViewParams is not None and customViewParams.get(constants.CREATE_METHOD, None) is not None:
         attributes["create"] = customViewParams[constants.CREATE_METHOD]
-    if customViewParams is not None and customViewParams[constants.RETREIVE_METHOD] is not None:
+    if customViewParams is not None and customViewParams.get(constants.RETREIVE_METHOD, None) is not None:
         attributes["retrieve"] = customViewParams[constants.RETREIVE_METHOD]
-    if customViewParams is not None and customViewParams[constants.UPDATE_METHOD] is not None:
+    if customViewParams is not None and customViewParams.get(constants.UPDATE_METHOD, None) is not None:
         attributes["update"] = customViewParams[constants.UPDATE_METHOD]
-    if customViewParams is not None and customViewParams[constants.DESTROY_METHOD] is not None:
+    if customViewParams is not None and customViewParams.get(constants.PARTIAL_UPDATE_METHOD, None) is not None:
+        attributes["partial_update"] = customViewParams[constants.PARTIAL_UPDATE_METHOD]
+    if customViewParams is not None and customViewParams.get(constants.DESTROY_METHOD, None) is not None:
         attributes["destroy"] = customViewParams[constants.DESTROY_METHOD]
     return attributes

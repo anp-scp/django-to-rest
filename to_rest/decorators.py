@@ -35,7 +35,7 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, search
             try:
                 options = cfg.restifyRegistry[cls.__name__]
             except KeyError:
-                logging.info("restify.decorators.restifyModel.decorator_restifyModel:: Performing registration for :" + cls.__name__)
+                logging.info("todjango.decorators.restifyModel.decorator_restifyModel:: Performing registration for :" + cls.__name__)
                 options = defaultdict(None)
                 options[constants.CUSTOM_VIEW_PARAMS] = customViewParams
                 options[constants.EXCLUDE_FIELDS] = excludeFields
