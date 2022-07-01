@@ -6,6 +6,30 @@ from django.db.models.fields.reverse_related import ManyToManyRel
 from to_rest import constants
 
 def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
+    """
+    Method to create actions for view set for one to many relationship. Creation and updation
+    of relationship can be handled from the other side of the relationship. Hence, no methods 
+    for put,patch,delete. Since, there are use cases where an element of an entity can be
+    related to an element of another entity more than once with other additional info. Hence,
+    having a retreive method makes no sense by default. However, if required, custom actions
+    can be provided as seen in decorators.py.
+
+    Parameters:
+
+        parentModel (django.db.models.Model): The model in the one to many side.
+
+        childSerializer (rest_framework.serializers.ModelSerializer): Serializer for model in
+        the other side.
+
+        field (django.db.models.fields.Field): The field involved in the relationship.
+
+        relatedName (str): The related name for the field.
+
+    Returns:
+
+        tuple of methods (tuple)
+
+    """
     childModel = field.model
     parentModelName = parentModel.__name__
 
@@ -29,6 +53,28 @@ def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
     return (funcRelatedList,)
 
 def manyToManyActionFactory(parentModel, field, relatedName):
+    """
+    Method to create actions for view set for many to many relationship. Since, there are 
+    use cases where an element of an entity can be related to an element of another entity 
+    more than once with other additional info. Hence, having a retreive method makes no 
+    sense by default. Also, for the same reason, for update, partial_update and delete
+    the primary key of the through model will be used as the path parameter for the nested url.
+    However, if required, custom actions can be provided as seen in decorators.py.
+
+    Parameters:
+
+        parentModel (django.db.models.Model): The model in the one to many side.
+
+        field (django.db.models.fields.Field): The field involved in the relationship.
+
+        relatedName (str): The related name for the field.
+    
+    Returns:
+
+        tuple of methods (tuple)
+
+    """
+
     throughModel = eval("parentModel.{}.through".format(relatedName))
     throughModelName = throughModel.__name__
     parentModelName = parentModel.__name__
@@ -40,7 +86,10 @@ def manyToManyActionFactory(parentModel, field, relatedName):
     throughSerializer = type(throughModelName+"Serializer", (serializers.ModelSerializer,), serializerAttribute)
     
     def funcRelatedList(self,request,pk=None):
+        #Kind of list view
         if self.request.method == "GET":
+            #The listing will be of the through objects as it present more information about the relation when there
+            # are additional information.
             parentObject = parentModel.objects.get(pk=pk)
             filter_param = field.field.m2m_reverse_field_name() + "_" + field.field.m2m_reverse_target_field_name() if isinstance(field,ManyToManyRel) else field.m2m_field_name() + "_" + field.m2m_target_field_name()
             throughObjects = eval("parentObject.{}.through.objects.filter({}=pk)".format(relatedName, filter_param))
@@ -56,6 +105,8 @@ def manyToManyActionFactory(parentModel, field, relatedName):
                 serializer = throughSerializer(throughObjects, many=True)
                 return Response(serializer.data)
         elif self.request.method == "POST":
+            #To create new relation ship, through objects would be used as it contains prmary key
+            #of both sides of the relationship
             parentObject = parentModel.objects.get(pk=pk)
             providedData = request.data
             parentObjectField = field.field.m2m_reverse_field_name()  if isinstance(field,ManyToManyRel) else field.m2m_field_name()
@@ -73,7 +124,11 @@ def manyToManyActionFactory(parentModel, field, relatedName):
     funcRelatedList = action(detail=True, methods=['get', 'post'], url_path=relatedName, url_name=parentModelName.lower() + "-" + relatedName +"-list")(funcRelatedList)
 
     def funcRelatedDetail(self,request,childPk,pk=None):
+        #kind of detail view
         if self.request.method == "PUT":
+            #For, updating a relationship, through object will be used. For, that reason, the primary
+            #key of the through object will be used as path parameter in the nested url. To get the primary
+            #key of the through object filter can be used in with the url of list view (GET)
             parentObject = parentModel.objects.get(pk=pk)
             filter_param = field.field.m2m_field_name() + "_" + field.field.m2m_target_field_name() if isinstance(field,ManyToManyRel) else field.m2m_reverse_field_name() + "_" + field.m2m_reverse_target_field_name()
             parentObjectField = field.field.m2m_reverse_field_name()  if isinstance(field,ManyToManyRel) else field.m2m_field_name()
@@ -85,6 +140,9 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             self.perform_update(serializer)
             return Response(serializer.data)
         elif self.request.method == "PATCH":
+            #For, updating a relationship, through object will be used. For, that reason, the primary
+            #key of the through object will be used as path parameter in the nested url. To get the primary
+            #key of the through object filter can be used in with the url of list view (GET)
             parentObject = parentModel.objects.get(pk=pk)
             filter_param = field.field.m2m_field_name() + "_" + field.field.m2m_target_field_name() if isinstance(field,ManyToManyRel) else field.m2m_reverse_field_name() + "_" + field.m2m_reverse_target_field_name()
             parentObjectField = field.field.m2m_reverse_field_name()  if isinstance(field,ManyToManyRel) else field.m2m_field_name()
@@ -96,6 +154,9 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             self.perform_update(serializer)
             return Response(serializer.data)
         elif self.request.method == "DELETE":
+            #For, deleting a relationship, through object will be used. For, that reason, the primary
+            #key of the through object will be used as path parameter in the nested url. To get the primary
+            #key of the through object filter can be used in with the url of list view (GET)
             parentObject = parentModel.objects.get(pk=pk)
             filter_param = field.field.m2m_field_name() + "_" + field.field.m2m_target_field_name() if isinstance(field,ManyToManyRel) else field.m2m_reverse_field_name() + "_" + field.m2m_reverse_target_field_name()
             throughObject = eval("parentObject.{}.through.objects.get(pk=childPk)".format(relatedName))
@@ -110,6 +171,21 @@ def manyToManyActionFactory(parentModel, field, relatedName):
     return (funcRelatedList, funcRelatedDetail)
     
 def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
+    """
+    Method to create all the attributes for view set.
+
+    Parameters:
+
+        model (django.db.models.Model) : The model for which the Viewset needs to be created
+
+        modelSerializer (rest_framework.serialzers.ModelSerializer) : Corresponding model serializer fo the model.
+
+        customViewParams (dict) : Dictionary of custom view attributes.
+    
+    Returns:
+
+        attributes (dict): dictionary of view attributes
+    """
     viewClassName = model.__name__ + "ViewSet"
     def list(self, request, *args, **kwargs):
         objects = self.get_queryset()
