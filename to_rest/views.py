@@ -27,11 +27,12 @@ def getTempViewSet(childModel, childSerializer, viewParams):
         attributes[constants.FILTERSET_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
         attributes[constants.SEARCH_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
         attributes[constants.ORDERING_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+    #update with custom params
     if viewParams is not None:
         attributes.update(viewParams)
     if attributes.get(constants.FILTERSET_CLASS, False):
         if attributes.get(constants.FILTERSET_FIELDS, False):
-            del attributes[constants.FILTERSET_FIELDS]
+            del attributes[constants.FILTERSET_FIELDS]#remove filterset_filds if filterset_class exists
 
     return type(constants.PROJECT_NAME_PREFIX + "temp_" + childModel.__name__, (ModelViewSet,), attributes)
 
@@ -274,55 +275,11 @@ def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
         attributes[constants.FILTERSET_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
         attributes[constants.SEARCH_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
         attributes[constants.ORDERING_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
-    
+    #update with custom params
     if customViewParams is not None:
         attributes.update(customViewParams)
     if attributes.get(constants.FILTERSET_CLASS, False):
         if attributes.get(constants.FILTERSET_FIELDS, False):
-            del attributes[constants.FILTERSET_FIELDS]
-        
-    
-    
-    
-    # if customViewParams is not None and customViewParams.get(constants.FILTER_BACKENDS, None) is not None:
-    #     attributes[constants.FILTER_BACKENDS] = customViewParams[constants.FILTER_BACKENDS]
-    # elif REST_FRAMEWORK_SETTINGS is not None and REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, None) is not None:
-    #     attributes[constants.FILTER_BACKENDS] = REST_FRAMEWORK_SETTINGS[constants.DEFAULT_FILTER_BACKENDS]
-    # else:
-    #     attributes[constants.FILTER_BACKENDS] = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # if customViewParams is not None and customViewParams.get(constants.FILTERSET_CLASS, None) is not None:
-    #     attributes[constants.FILTERSET_CLASS] = customViewParams[constants.FILTERSET_CLASS]
-    # elif customViewParams is not None and customViewParams.get(constants.FILTERSET_FIELDS, None) is not None:
-    #     attributes[constants.FILTERSET_FIELDS] = customViewParams[constants.FILTERSET_FIELDS]
-    # elif isDefaultSerializer(modelSerializer):
-    #     attributes[constants.FILTERSET_FIELDS] = [x.name for x in model._meta.get_fields() if not x.is_relation]
-    # if customViewParams is not None and customViewParams.get(constants.ORDERING_FIELDS, None) is not None:
-    #     attributes[constants.ORDERING_FIELDS] = customViewParams[constants.ORDERING_FIELDS]
-    # elif isDefaultSerializer(modelSerializer):
-    #     attributes[constants.ORDERING_FIELDS] = [x.name for x in model._meta.get_fields() if not x.is_relation]
-    # if customViewParams is not None and customViewParams.get(constants.SEARCH_FIELDS, None) is not None:
-    #     attributes[constants.SEARCH_FIELDS] = customViewParams[constants.SEARCH_FIELDS]
-    # elif isDefaultSerializer(modelSerializer):
-    #     attributes[constants.SEARCH_FIELDS] = [x.name for x in model._meta.get_fields() if not x.is_relation]
-    # if customViewParams is not None and customViewParams.get(constants.ORDERING, None) is not None:
-    #     attributes[constants.ORDERING] = customViewParams[constants.ORDERING] #No else to keep it to default
-    
-    # if customViewParams is not None and customViewParams.get(constants.GET_OBJECT_METHOD, None) is not None:
-    #     attributes["get_object"] = customViewParams[constants.GET_OBJECT_METHOD]
-    # if customViewParams is not None and customViewParams.get(constants.GET_QUERYSET_METHOD, None) is not None:
-    #     attributes["get_queryset"] = customViewParams[constants.GET_QUERYSET_METHOD]
-    # if customViewParams is not None and customViewParams.get(constants.LIST_METHOD, None) is not None:
-    #     attributes["list"] = customViewParams[constants.LIST_METHOD]
-    # else:
-    #     attributes["list"] = list
-    # if customViewParams is not None and customViewParams.get(constants.CREATE_METHOD, None) is not None:
-    #     attributes["create"] = customViewParams[constants.CREATE_METHOD]
-    # if customViewParams is not None and customViewParams.get(constants.RETREIVE_METHOD, None) is not None:
-    #     attributes["retrieve"] = customViewParams[constants.RETREIVE_METHOD]
-    # if customViewParams is not None and customViewParams.get(constants.UPDATE_METHOD, None) is not None:
-    #     attributes["update"] = customViewParams[constants.UPDATE_METHOD]
-    # if customViewParams is not None and customViewParams.get(constants.PARTIAL_UPDATE_METHOD, None) is not None:
-    #     attributes["partial_update"] = customViewParams[constants.PARTIAL_UPDATE_METHOD]
-    # if customViewParams is not None and customViewParams.get(constants.DESTROY_METHOD, None) is not None:
-    #     attributes["destroy"] = customViewParams[constants.DESTROY_METHOD]
+            del attributes[constants.FILTERSET_FIELDS]#remove filterset_filds if filterset_class exists
+
     return attributes
