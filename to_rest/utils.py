@@ -22,12 +22,11 @@ def restifyApp(appName, relativeUri):
 
     for entity in cfg.djangoToRestRegistry:
         model = apps.get_app_config(appName).get_model(entity)
-        customSerializer = cfg.djangoToRestRegistry[entity][constants.CUSTOM_SERIALIZER]
-        customViewParams = cfg.djangoToRestRegistry[entity][constants.CUSTOM_VIEW_PARAMS]
-        excludedFields = cfg.djangoToRestRegistry[entity][constants.EXCLUDE_FIELDS]
-        methodFields = cfg.djangoToRestRegistry[entity][constants.METHOD_FIELDS]
-        searchFields = cfg.djangoToRestRegistry[entity][constants.SEARCH_FIELDS]
-        requiredReverseRelFields = cfg.djangoToRestRegistry[entity][constants.REQUIRED_REVERSE_REL_FIELDS]
+        customSerializer = cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_SERIALIZER,None)
+        customViewParams = cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_VIEW_PARAMS,None)
+        excludedFields = cfg.djangoToRestRegistry[entity].get(constants.EXCLUDE_FIELDS, None)
+        methodFields = cfg.djangoToRestRegistry[entity].get(constants.METHOD_FIELDS, None)
+        requiredReverseRelFields = cfg.djangoToRestRegistry[entity].get(constants.REQUIRED_REVERSE_REL_FIELDS,None)
         modelSerializer = None
         if customSerializer is None:
             modelSerializer = restifySerializer.createModelSerializers(appName, model, excludedFields, methodFields, requiredReverseRelFields)
@@ -42,8 +41,8 @@ def restifyApp(appName, relativeUri):
     router = routers.DefaultRouter()
     for entity in cfg.djangoToRestRegistry:
         viewSetAttributes = cfg.djangoToRestRegistry[entity][constants.VIEW_SET_ATTRIBUTES]
-        customActions = cfg.djangoToRestRegistry[entity][constants.CUSTOM_ACTIONS]
-        defaultActions = cfg.djangoToRestRegistry[entity][constants.DEFAULT_ACTIONS]
+        customActions = cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_ACTIONS, None)
+        defaultActions = cfg.djangoToRestRegistry[entity].get(constants.DEFAULT_ACTIONS, None)
         if defaultActions is not None:
             for defaultAction in defaultActions:
                 if defaultAction[0] == "oneToManyActionFactory":
@@ -57,16 +56,14 @@ def restifyApp(appName, relativeUri):
                     action = views.oneToManyActionFactory(defaultAction[1],serializer,defaultAction[3], defaultAction[4])
                     for x in action:
                         if customActions is not None and customActions.get(x.__name__, None) is not None:
-                            viewSetAttributes[x.__name__] = customActions[x.__name__]
-                            del customActions[x.__name__]
+                            viewSetAttributes[x.__name__] = customActions.pop(x.__name__)
                         else:
                             viewSetAttributes[x.__name__] = x
                 elif defaultAction[0] == "manyToManyActionFactory":
                     action = views.manyToManyActionFactory(defaultAction[1],defaultAction[2],defaultAction[3])
                     for x in action:
                         if customActions is not None and customActions.get(x.__name__,None) is not None:
-                            viewSetAttributes[x.__name__] = customActions[x.__name__]
-                            del customActions[x.__name__]
+                            viewSetAttributes[x.__name__] = customActions.pop(x.__name__)
                         else:
                             viewSetAttributes[x.__name__] = x
         if customActions is not None:

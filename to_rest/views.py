@@ -1,9 +1,40 @@
+import traceback
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework import serializers
 from django.db.models.fields.reverse_related import ManyToManyRel
+from django.db.models.fields.related import ForeignKey
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from to_rest import constants
+from rest_framework.viewsets import ModelViewSet
+from to_rest import cfg
+
+def isDefaultSerializer(serializer):
+    return serializer.__name__.startswith(constants.PROJECT_NAME_PREFIX)
+
+
+def getTempViewSet(childModel, childSerializer, viewParams):
+    REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
+    defaultFilterBackends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    #set defaults
+    attributes = dict()
+    attributes[constants.SERIALIZER_CLASS] = childSerializer
+    attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
+    if isDefaultSerializer(childSerializer):
+        attributes[constants.FILTERSET_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+        attributes[constants.SEARCH_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+        attributes[constants.ORDERING_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+    if viewParams is not None:
+        attributes.update(viewParams)
+    if attributes.get(constants.FILTERSET_CLASS, False):
+        if attributes.get(constants.FILTERSET_FIELDS, False):
+            del attributes[constants.FILTERSET_FIELDS]
+
+    return type(constants.PROJECT_NAME_PREFIX + "temp_" + childModel.__name__, (ModelViewSet,), attributes)
+
 
 def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
     """
@@ -30,12 +61,25 @@ def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
         tuple of methods (tuple)
 
     """
-    childModel = field.model
+    REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
+    childModel = field.related_model
     parentModelName = parentModel.__name__
+    childCustomViewParams = None
+    if cfg.djangoToRestRegistry.get(childModel.__name__, False):
+        if cfg.djangoToRestRegistry[childModel.__name__].get(constants.CUSTOM_VIEW_PARAMS, False):
+            childCustomViewParams = cfg.djangoToRestRegistry[childModel.__name__][constants.CUSTOM_VIEW_PARAMS]    
+
 
     def funcRelatedList(self,request,pk=None):
         parentObject = parentModel.objects.get(pk=pk)
         childObjects = eval("parentObject.{}.all()".format(relatedName))
+        tempView = getTempViewSet(childModel, childSerializer, childCustomViewParams)
+        tempViewObj = tempView()
+        try:
+            for backend in list(getattr(tempViewObj, constants.FILTER_BACKENDS)):
+                childObjects = backend().filter_queryset(self.request, childObjects, tempViewObj)
+        except Exception as e:
+            traceback.print_exc()
         if len(childObjects) == 0:
             headers = {}
             headers[constants.CONTENT_MESSAGE] = constants.NO_OBJECT_EXISTS.format("related "+childModel.__name__)
@@ -47,7 +91,7 @@ def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
                 return self.get_paginated_response(serializer.data)
             serializer = childSerializer(childObjects, many=True)
             return Response(serializer.data)
-    
+
     funcRelatedList.__name__ = constants.ONE_TO_MANY_LIST_ACTION + relatedName
     funcRelatedList = action(detail=True, methods=['get'], url_path=relatedName, url_name=parentModelName.lower() + "-" + relatedName +"-list")(funcRelatedList)
     return (funcRelatedList,)
@@ -80,10 +124,20 @@ def manyToManyActionFactory(parentModel, field, relatedName):
     parentModelName = parentModel.__name__
     metaAttributes = dict()
     metaAttributes["model"] = throughModel
-    metaAttributes["fields"] = "__all__"
+    metaAttributes["fields"] = [x.name for x in throughModel._meta.get_fields()]
     meta = type("Meta", (object,), metaAttributes)
     serializerAttribute = {"Meta": meta}
-    throughSerializer = type(throughModelName+"Serializer", (serializers.ModelSerializer,), serializerAttribute)
+    throughSerializer = type(constants.PROJECT_NAME_PREFIX + throughModelName+"Serializer", (serializers.ModelSerializer,), serializerAttribute)
+
+    if cfg.djangoToRestRegistry.get(throughModelName, False):
+        if cfg.djangoToRestRegistry[throughModelName].get(constants.CUSTOM_SERIALIZER, cfg.djangoToRestRegistry[throughModelName].get(constants.DEFAULT_SERIALIZER, False)):       
+            throughSerializer = cfg.djangoToRestRegistry[throughModelName].get(constants.CUSTOM_SERIALIZER, cfg.djangoToRestRegistry[throughModelName][constants.DEFAULT_SERIALIZER])
+    
+    viewParams = None
+
+    if cfg.djangoToRestRegistry.get(throughModel.__name__, False):
+        if cfg.djangoToRestRegistry[throughModel.__name__].get(constants.CUSTOM_VIEW_PARAMS, False):
+            viewParams = cfg.djangoToRestRegistry[throughModel.__name__][constants.CUSTOM_VIEW_PARAMS]
     
     def funcRelatedList(self,request,pk=None):
         #Kind of list view
@@ -93,6 +147,13 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             parentObject = parentModel.objects.get(pk=pk)
             filter_param = field.field.m2m_reverse_field_name() + "_" + field.field.m2m_reverse_target_field_name() if isinstance(field,ManyToManyRel) else field.m2m_field_name() + "_" + field.m2m_target_field_name()
             throughObjects = eval("parentObject.{}.through.objects.filter({}=pk)".format(relatedName, filter_param))
+            tempView = getTempViewSet(throughModel, throughSerializer, viewParams)
+            tempViewObj = tempView()
+            try:
+                for backend in list(getattr(tempViewObj, constants.FILTER_BACKENDS)):
+                    throughObjects = backend().filter_queryset(self.request, throughObjects, tempViewObj)
+            except Exception as e:
+                traceback.print_exc()
             if len(throughObjects) == 0:
                 headers = {}
                 headers[constants.CONTENT_MESSAGE] = constants.NO_OBJECT_EXISTS.format("related "+throughModel.__name__)
@@ -188,7 +249,7 @@ def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
     """
     viewClassName = model.__name__ + "ViewSet"
     def list(self, request, *args, **kwargs):
-        objects = self.get_queryset()
+        objects = self.filter_queryset(self.get_queryset())
         if len(objects) == 0:
             headers = {}
             headers[constants.CONTENT_MESSAGE] = constants.NO_OBJECT_EXISTS.format(model.__name__)
@@ -202,24 +263,66 @@ def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
             return Response(serializer.data)
     
     attributes = {}
+    REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
+    #add defaults
+    defaultFilterBackends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     attributes["queryset"] = model.objects.all()
     attributes["serializer_class"] = modelSerializer
-    if customViewParams is not None and customViewParams.get(constants.GET_OBJECT_METHOD, None) is not None:
-        attributes["get_object"] = customViewParams[constants.GET_OBJECT_METHOD]
-    if customViewParams is not None and customViewParams.get(constants.GET_QUERYSET_METHOD, None) is not None:
-        attributes["get_queryset"] = customViewParams[constants.GET_QUERYSET_METHOD]
-    if customViewParams is not None and customViewParams.get(constants.LIST_METHOD, None) is not None:
-        attributes["list"] = customViewParams[constants.LIST_METHOD]
-    else:
-        attributes["list"] = list
-    if customViewParams is not None and customViewParams.get(constants.CREATE_METHOD, None) is not None:
-        attributes["create"] = customViewParams[constants.CREATE_METHOD]
-    if customViewParams is not None and customViewParams.get(constants.RETREIVE_METHOD, None) is not None:
-        attributes["retrieve"] = customViewParams[constants.RETREIVE_METHOD]
-    if customViewParams is not None and customViewParams.get(constants.UPDATE_METHOD, None) is not None:
-        attributes["update"] = customViewParams[constants.UPDATE_METHOD]
-    if customViewParams is not None and customViewParams.get(constants.PARTIAL_UPDATE_METHOD, None) is not None:
-        attributes["partial_update"] = customViewParams[constants.PARTIAL_UPDATE_METHOD]
-    if customViewParams is not None and customViewParams.get(constants.DESTROY_METHOD, None) is not None:
-        attributes["destroy"] = customViewParams[constants.DESTROY_METHOD]
+    attributes["list"] = list
+    attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
+    if isDefaultSerializer(modelSerializer):
+        attributes[constants.FILTERSET_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+        attributes[constants.SEARCH_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+        attributes[constants.ORDERING_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+    
+    if customViewParams is not None:
+        attributes.update(customViewParams)
+    if attributes.get(constants.FILTERSET_CLASS, False):
+        if attributes.get(constants.FILTERSET_FIELDS, False):
+            del attributes[constants.FILTERSET_FIELDS]
+        
+    
+    
+    
+    # if customViewParams is not None and customViewParams.get(constants.FILTER_BACKENDS, None) is not None:
+    #     attributes[constants.FILTER_BACKENDS] = customViewParams[constants.FILTER_BACKENDS]
+    # elif REST_FRAMEWORK_SETTINGS is not None and REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, None) is not None:
+    #     attributes[constants.FILTER_BACKENDS] = REST_FRAMEWORK_SETTINGS[constants.DEFAULT_FILTER_BACKENDS]
+    # else:
+    #     attributes[constants.FILTER_BACKENDS] = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    # if customViewParams is not None and customViewParams.get(constants.FILTERSET_CLASS, None) is not None:
+    #     attributes[constants.FILTERSET_CLASS] = customViewParams[constants.FILTERSET_CLASS]
+    # elif customViewParams is not None and customViewParams.get(constants.FILTERSET_FIELDS, None) is not None:
+    #     attributes[constants.FILTERSET_FIELDS] = customViewParams[constants.FILTERSET_FIELDS]
+    # elif isDefaultSerializer(modelSerializer):
+    #     attributes[constants.FILTERSET_FIELDS] = [x.name for x in model._meta.get_fields() if not x.is_relation]
+    # if customViewParams is not None and customViewParams.get(constants.ORDERING_FIELDS, None) is not None:
+    #     attributes[constants.ORDERING_FIELDS] = customViewParams[constants.ORDERING_FIELDS]
+    # elif isDefaultSerializer(modelSerializer):
+    #     attributes[constants.ORDERING_FIELDS] = [x.name for x in model._meta.get_fields() if not x.is_relation]
+    # if customViewParams is not None and customViewParams.get(constants.SEARCH_FIELDS, None) is not None:
+    #     attributes[constants.SEARCH_FIELDS] = customViewParams[constants.SEARCH_FIELDS]
+    # elif isDefaultSerializer(modelSerializer):
+    #     attributes[constants.SEARCH_FIELDS] = [x.name for x in model._meta.get_fields() if not x.is_relation]
+    # if customViewParams is not None and customViewParams.get(constants.ORDERING, None) is not None:
+    #     attributes[constants.ORDERING] = customViewParams[constants.ORDERING] #No else to keep it to default
+    
+    # if customViewParams is not None and customViewParams.get(constants.GET_OBJECT_METHOD, None) is not None:
+    #     attributes["get_object"] = customViewParams[constants.GET_OBJECT_METHOD]
+    # if customViewParams is not None and customViewParams.get(constants.GET_QUERYSET_METHOD, None) is not None:
+    #     attributes["get_queryset"] = customViewParams[constants.GET_QUERYSET_METHOD]
+    # if customViewParams is not None and customViewParams.get(constants.LIST_METHOD, None) is not None:
+    #     attributes["list"] = customViewParams[constants.LIST_METHOD]
+    # else:
+    #     attributes["list"] = list
+    # if customViewParams is not None and customViewParams.get(constants.CREATE_METHOD, None) is not None:
+    #     attributes["create"] = customViewParams[constants.CREATE_METHOD]
+    # if customViewParams is not None and customViewParams.get(constants.RETREIVE_METHOD, None) is not None:
+    #     attributes["retrieve"] = customViewParams[constants.RETREIVE_METHOD]
+    # if customViewParams is not None and customViewParams.get(constants.UPDATE_METHOD, None) is not None:
+    #     attributes["update"] = customViewParams[constants.UPDATE_METHOD]
+    # if customViewParams is not None and customViewParams.get(constants.PARTIAL_UPDATE_METHOD, None) is not None:
+    #     attributes["partial_update"] = customViewParams[constants.PARTIAL_UPDATE_METHOD]
+    # if customViewParams is not None and customViewParams.get(constants.DESTROY_METHOD, None) is not None:
+    #     attributes["destroy"] = customViewParams[constants.DESTROY_METHOD]
     return attributes

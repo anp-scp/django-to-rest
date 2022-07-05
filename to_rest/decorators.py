@@ -6,7 +6,7 @@ from rest_framework.serializers import BaseSerializer
 import logging
 from collections import defaultdict
 
-def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, searchFields=None, methodFields=None, customSerialier=None, requiredReverseRelFields=None, customActions=None):
+def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, methodFields=None, customSerialier=None, requiredReverseRelFields=None, customActions=None):
     """
     A decorator function to include the models in the registry so that the decorated models
     are marked for restification. By restification we mean to expose REST api(s) for that 
@@ -22,9 +22,6 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, search
         fields will not be included in the serializer. If customSerializer is provided then this
         parameter will ne ignored. 
 
-        searchFields (list): The fields that can be used for searching via query params. If none, 
-        then no serach query params would be supported.
-
         methodFields (list): The list of methods as read only fields. This can be used to include the
         model's methods output as field. This include only those field that don't take any parameter.
 
@@ -34,24 +31,22 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, search
         a reverse field is also included in the serializer for the model in the other side of relationship.
         To make those a required field in post and put. Use this parameter.
 
-        customActions (dict): To provide extra actions on viewset
+        customActions (list): List of custom actions
     Returns:
         decorated class or function object
     """
-    if customViewParams is not None and isinstance(customViewParams, dict):
+    if customViewParams is not None and not isinstance(customViewParams, dict):
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("customViewParams", "dict", type(customViewParams)))
-    if customViewParams is not None and isinstance(excludeFields, list):
+    if excludeFields is not None and not isinstance(excludeFields, list):
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("excludeFields", "list", type(excludeFields)))
-    if customViewParams is not None and isinstance(searchFields, list):
-        raise TypeError(constants.TYPE_ERROR_MESSAGE.format("searchFields", "list", type(searchFields)))
-    if customViewParams is not None and isinstance(methodFields, list):
+    if methodFields is not None and not isinstance(methodFields, list):
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("methodFields", "list", type(methodFields)))
-    if customViewParams is not None and isinstance(customSerialier, BaseSerializer):
+    if customSerialier is not None and not isinstance(customSerialier, BaseSerializer):
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("customSerialier", "BaseSerializer", type(customSerialier)))
-    if customViewParams is not None and isinstance(requiredReverseRelFields, list):
+    if requiredReverseRelFields is not None and not isinstance(requiredReverseRelFields, list):
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("requiredReverseRelFields", "list", type(requiredReverseRelFields)))
-    if customViewParams is not None and isinstance(customActions, dict):
-        raise TypeError(constants.TYPE_ERROR_MESSAGE.format("customActions", "dict", type(customActions)))
+    if customActions is not None and not isinstance(customActions, list):
+        raise TypeError(constants.TYPE_ERROR_MESSAGE.format("customActions", "list", type(requiredReverseRelFields)))
     def decorator_restifyModel(cls):
         """
         The decorator function that does the registry/marking.
@@ -67,7 +62,6 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, search
                 options = defaultdict(None)
                 options[constants.CUSTOM_VIEW_PARAMS] = customViewParams
                 options[constants.EXCLUDE_FIELDS] = excludeFields
-                options[constants.SEARCH_FIELDS] = searchFields
                 options[constants.METHOD_FIELDS] = methodFields
                 options[constants.CUSTOM_SERIALIZER] = customSerialier
                 options[constants.REQUIRED_REVERSE_REL_FIELDS] = requiredReverseRelFields
