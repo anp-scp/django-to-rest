@@ -1,0 +1,22 @@
+site_name: Django To Rest Docs
+theme: 
+  name: material
+  logo: img/small_logo_indigo.png
+  favicon: img/small_logo_indigo.png
+  features:
+    - navigation.tabs
+    - header.autohide
+    - navigation.top
+  font:
+    text: Roboto Condensed
+    code: Roboto Mono
+  palette: 
+    scheme: default
+    primary: indigo
+    accent: indigo
+  
+  
+  
+markdown_extensions:
+  - attr_list
+  - md_in_html
