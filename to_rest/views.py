@@ -25,7 +25,7 @@ def getTempViewSet(childModel, childSerializer, viewParams):
     attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
     if isDefaultSerializer(childSerializer):
         attributes[constants.FILTERSET_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
-        attributes[constants.SEARCH_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+        attributes[constants.SEARCH_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation)] #no relational field by default as there could be large number of relational lookups possible
         attributes[constants.ORDERING_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
     #update with custom params
     if viewParams is not None:
@@ -273,7 +273,7 @@ def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
     attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
     if isDefaultSerializer(modelSerializer):
         attributes[constants.FILTERSET_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
-        attributes[constants.SEARCH_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
+        attributes[constants.SEARCH_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation)] #no relational field by default as there could be large number of relational lookups possible
         attributes[constants.ORDERING_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
     #update with custom params
     if customViewParams is not None:
