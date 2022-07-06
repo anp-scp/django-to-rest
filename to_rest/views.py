@@ -13,10 +13,31 @@ from rest_framework.viewsets import ModelViewSet
 from to_rest import cfg
 
 def isDefaultSerializer(serializer):
+    """
+    Function to check if a serializer is default or custom.
+
+    Parameters:
+        serializer (BaseSerializer): the serializer object
+
+    Returns:
+        boolean
+    """
     return serializer.__name__.startswith(constants.PROJECT_NAME_PREFIX)
 
 
 def getTempViewSet(childModel, childSerializer, viewParams):
+    """
+    Function to create temporary views for filtering and permission purposes for actions as
+    actions do not accept additional filterset_class or filterset_fields.
+
+    Parameters:
+        childModel (django.db.models.Model) : the model object
+        childSerializer (rest_framework.serializers.BaseSerializer) : the serializer
+        viewParams (dict) : a dictionary for the view attributes
+    
+    Returns:
+        ViewSet
+    """
     REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
     defaultFilterBackends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     #set defaults
