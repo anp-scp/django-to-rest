@@ -41,7 +41,6 @@ def restifyApp(appName, relativeUri):
     router = routers.DefaultRouter()
     for entity in cfg.djangoToRestRegistry:
         viewSetAttributes = cfg.djangoToRestRegistry[entity][constants.VIEW_SET_ATTRIBUTES]
-        customActions = cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_ACTIONS, None)
         defaultActions = cfg.djangoToRestRegistry[entity].get(constants.DEFAULT_ACTIONS, None)
         if defaultActions is not None:
             for defaultAction in defaultActions:
@@ -55,20 +54,14 @@ def restifyApp(appName, relativeUri):
                         serializer = customSerializer
                     action = views.oneToManyActionFactory(defaultAction[1],serializer,defaultAction[3], defaultAction[4])
                     for x in action:
-                        if customActions is not None and customActions.get(x.__name__, None) is not None:
-                            viewSetAttributes[x.__name__] = customActions.pop(x.__name__)
-                        else:
+                        if viewSetAttributes is not None and viewSetAttributes.get(x.__name__, None) is None:
                             viewSetAttributes[x.__name__] = x
                 elif defaultAction[0] == "manyToManyActionFactory":
                     action = views.manyToManyActionFactory(defaultAction[1],defaultAction[2],defaultAction[3])
                     for x in action:
-                        if customActions is not None and customActions.get(x.__name__,None) is not None:
-                            viewSetAttributes[x.__name__] = customActions.pop(x.__name__)
-                        else:
+                        if viewSetAttributes is not None and viewSetAttributes.get(x.__name__,None) is None:
                             viewSetAttributes[x.__name__] = x
-        if customActions is not None:
-            for customAction in customActions:
-                viewSetAttributes[customAction] = customActions[customAction]
+        
         viewSet = type(constants.PROJECT_NAME_PREFIX + entity + "ViewSet", (ModelViewSet,), viewSetAttributes)
         cfg.djangoToRestRegistry[entity][constants.DEFAULT_VIEW_SET] = viewSet
         router.register(prefix=r'{}/{}'.format(relativeUri, entity.lower()), viewset=viewSet, basename=entity.lower())
