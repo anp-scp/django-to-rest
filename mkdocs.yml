@@ -1,25 +1,31 @@
 site_name: Django To Rest Docs
+dev_addr: 127.0.0.1:8080
+
+nav:
+  - index.md
+  - quickstart.md
+
 theme: 
   name: material
   logo: img/small_logo_grey.png
   favicon: img/small_logo_grey.png
   features:
     - navigation.tabs
-    - header.autohide
     - navigation.top
+    - content.code.annotate
   font:
     text: Roboto Condensed
     code: Roboto Mono
   palette: 
     - scheme: default
       primary: blue grey
-      accent: cyan
+      accent: blue
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
       primary: blue grey
-      accent: cyan
+      accent: blue
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -28,3 +34,8 @@ theme:
 markdown_extensions:
   - attr_list
   - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
