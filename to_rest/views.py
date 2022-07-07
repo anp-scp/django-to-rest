@@ -12,6 +12,12 @@ from to_rest import constants
 from rest_framework.viewsets import ModelViewSet
 from to_rest import cfg
 
+REST_FRAMEWORK_SETTINGS = None
+try:
+    REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
+except Exception:
+    pass
+
 def isDefaultSerializer(serializer):
     """
     Function to check if a serializer is default or custom.
@@ -38,7 +44,7 @@ def getTempViewSet(childModel, childSerializer, viewParams):
     Returns:
         ViewSet
     """
-    REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
+    
     defaultFilterBackends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     #set defaults
     attributes = dict()
@@ -83,7 +89,6 @@ def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
         tuple of methods (tuple)
 
     """
-    REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
     childModel = field.related_model
     parentModelName = parentModel.__name__
     childCustomViewParams = None
@@ -285,7 +290,6 @@ def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
             return Response(serializer.data)
     
     attributes = {}
-    REST_FRAMEWORK_SETTINGS = settings.REST_FRAMEWORK
     #add defaults
     defaultFilterBackends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     attributes["queryset"] = model.objects.all()
