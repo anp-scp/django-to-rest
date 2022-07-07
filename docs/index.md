@@ -3,9 +3,9 @@ title: Overview
 hide:
   - navigation
 ---
-![Django To Rest](img/large_logo_light.png){ width="300"; align=left }
+![Django To Rest](img/large_logo_black.png){ width="300"; align=left }
 
-Django Rest Framework is small tool that helps to expose REST api(s) for
+Django To Rest is small tool that helps to expose REST api(s) for
 django models with minimum effort. Some of the features are:
 
 * Just add a decorator atop of a model and REST apis is created. That's the work!!!
@@ -14,10 +14,9 @@ django models with minimum effort. Some of the features are:
 * *Summary:* Less time??? Just install the tool and the decorator. Done!!!
 
 * * *
-
 * *Documentation:* [https://anp-scp.github.io/django-to-rest](https://anp-scp.github.io/django-to-rest)
 * *Source Code:* [https://github.com/anp-scp/django-to-rest](https://github.com/anp-scp/django-to-rest)
-
+* * *
 
 ## Requirements
 

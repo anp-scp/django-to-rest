@@ -1,8 +1,8 @@
 site_name: Django To Rest Docs
 theme: 
   name: material
-  logo: img/small_logo_indigo.png
-  favicon: img/small_logo_indigo.png
+  logo: img/small_logo_grey.png
+  favicon: img/small_logo_grey.png
   features:
     - navigation.tabs
     - header.autohide
@@ -11,12 +11,20 @@ theme:
     text: Roboto Condensed
     code: Roboto Mono
   palette: 
-    scheme: default
-    primary: indigo
-    accent: indigo
-  
-  
-  
+    - scheme: default
+      primary: blue grey
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue grey
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+
 markdown_extensions:
   - attr_list
   - md_in_html
