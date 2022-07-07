@@ -49,7 +49,7 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
         else:
             options = None
             try:
-                options = cfg.djangoToRestRegistry[cls.__name__]
+                options = cfg.djangoToRestRegistry[cls._meta.label]
             except KeyError:
                 logging.info("todjango.decorators.restifyModel.decorator_restifyModel:: Performing registration for :" + cls.__name__)
                 options = defaultdict(None)
@@ -58,7 +58,7 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
                 options[constants.METHOD_FIELDS] = methodFields
                 options[constants.CUSTOM_SERIALIZER] = None if customViewParams is None else customViewParams.pop(constants.SERIALIZER_CLASS, None)
                 options[constants.REQUIRED_REVERSE_REL_FIELDS] = requiredReverseRelFields
-                cfg.djangoToRestRegistry[cls.__name__] = options
+                cfg.djangoToRestRegistry[cls._meta.label] = options
             return cls
     
     if _cls is None:

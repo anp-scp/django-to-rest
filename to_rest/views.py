@@ -55,7 +55,7 @@ def getTempViewSet(childModel, childSerializer, viewParams):
         if attributes.get(constants.FILTERSET_FIELDS, False):
             del attributes[constants.FILTERSET_FIELDS]#remove filterset_filds if filterset_class exists
 
-    return type(constants.PROJECT_NAME_PREFIX + "temp_" + childModel.__name__, (ModelViewSet,), attributes)
+    return type(constants.PROJECT_NAME_PREFIX + "temp_" + childModel._meta.label.replace('.','_'), (ModelViewSet,), attributes)
 
 
 def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
@@ -87,9 +87,9 @@ def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
     childModel = field.related_model
     parentModelName = parentModel.__name__
     childCustomViewParams = None
-    if cfg.djangoToRestRegistry.get(childModel.__name__, False):
-        if cfg.djangoToRestRegistry[childModel.__name__].get(constants.CUSTOM_VIEW_PARAMS, False):
-            childCustomViewParams = cfg.djangoToRestRegistry[childModel.__name__][constants.CUSTOM_VIEW_PARAMS]    
+    if cfg.djangoToRestRegistry.get(childModel._meta.label, False):
+        if cfg.djangoToRestRegistry[childModel._meta.label].get(constants.CUSTOM_VIEW_PARAMS, False):
+            childCustomViewParams = cfg.djangoToRestRegistry[childModel._meta.label][constants.CUSTOM_VIEW_PARAMS]    
 
 
     def funcRelatedList(self,request,pk=None):
@@ -151,9 +151,9 @@ def manyToManyActionFactory(parentModel, field, relatedName):
     serializerAttribute = {"Meta": meta}
     throughSerializer = type(constants.PROJECT_NAME_PREFIX + throughModelName+"Serializer", (serializers.ModelSerializer,), serializerAttribute)
 
-    if cfg.djangoToRestRegistry.get(throughModelName, False):
-        if cfg.djangoToRestRegistry[throughModelName].get(constants.CUSTOM_SERIALIZER, cfg.djangoToRestRegistry[throughModelName].get(constants.DEFAULT_SERIALIZER, False)):       
-            throughSerializer = cfg.djangoToRestRegistry[throughModelName].get(constants.CUSTOM_SERIALIZER, cfg.djangoToRestRegistry[throughModelName][constants.DEFAULT_SERIALIZER])
+    if cfg.djangoToRestRegistry.get(throughModel._meta.label, False):
+        if cfg.djangoToRestRegistry[throughModel._meta.label].get(constants.CUSTOM_SERIALIZER, cfg.djangoToRestRegistry[throughModel._meta.label].get(constants.DEFAULT_SERIALIZER, False)):       
+            throughSerializer = cfg.djangoToRestRegistry[throughModel._meta.label].get(constants.CUSTOM_SERIALIZER, cfg.djangoToRestRegistry[throughModel._meta.label][constants.DEFAULT_SERIALIZER])
     
     viewParams = None
 
