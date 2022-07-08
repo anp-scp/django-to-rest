@@ -44,10 +44,12 @@ Let us have a look on an example of how the tool can be used to expose REST API.
 
 Make sure that `djangorestframework` is installed and included in `INSTALLED_APPS ` settings.py as shown below:
 ```py title="settings.py" linenums="1"
+...
 INSTALLED_APPS = [
     'rest_framework',
     ...
 ]
+...
 ```
 Now create two models as shown below:
 ```py title="models.py" linenums="1"
@@ -63,7 +65,7 @@ class Question(models.Model):
     pub_date = models.DateTimeField('date published')
 
     def __str__(self):
-    return self.question_text
+        return self.question_text
 
 
 @restifyModel # (3)

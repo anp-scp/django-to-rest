@@ -7,25 +7,28 @@ nav:
 
 theme: 
   name: material
-  logo: img/small_logo_grey.png
+  icon:
+    logo: material/book
   favicon: img/small_logo_grey.png
   features:
     - navigation.tabs
     - navigation.top
+    - header.autohide
+    - navigation.tabs.sticky
     - content.code.annotate
   font:
     text: Roboto Condensed
     code: Roboto Mono
   palette: 
     - scheme: default
-      primary: blue grey
-      accent: blue
+      primary: white
+      accent: amber
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
       primary: blue grey
-      accent: blue
+      accent: amber
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
