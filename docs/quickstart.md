@@ -360,3 +360,50 @@ Now open a new terminal check our apis using httpie:
     ]
 
 
+### Partially update (PATCH)
+
+!!! Note
+
+    Here, httpie is used for examples. Hence, JSON like body is not used for PUT, PATCH, POST requests for body. Instead, httpie style is used. Other clients can also be used if any difficulty is faced. 
+* * * 
+    $ http PATCH http://127.0.0.1:8000/rest/v1/polls/choice/1/ choice_text=Highly\ Conjested
+    HTTP/1.1 200 OK
+    Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
+    Content-Length: 64
+    Content-Type: application/json
+    Cross-Origin-Opener-Policy: same-origin
+    Date: Fri, 08 Jul 2022 15:06:21 GMT
+    Referrer-Policy: same-origin
+    Server: WSGIServer/0.2 CPython/3.8.10
+    Vary: Accept, Cookie
+    X-Content-Type-Options: nosniff
+    X-Frame-Options: DENY
+
+    {
+        "choice_text": "Highly Conjested",
+        "id": 1,
+        "question": 1,
+        "votes": 0
+    }
+
+### Create (POST)
+
+    $ http POST http://127.0.0.1:8000/rest/v1/polls/choice/ choice_text=Doing\ bad question=2 votes=0
+    HTTP/1.1 201 Created
+    Allow: GET, POST, HEAD, OPTIONS
+    Content-Length: 57
+    Content-Type: application/json
+    Cross-Origin-Opener-Policy: same-origin
+    Date: Fri, 08 Jul 2022 15:19:40 GMT
+    Referrer-Policy: same-origin
+    Server: WSGIServer/0.2 CPython/3.8.10
+    Vary: Accept, Cookie
+    X-Content-Type-Options: nosniff
+    X-Frame-Options: DENY
+
+    {
+        "choice_text": "Doing bad",
+        "id": 5,
+        "question": 2,
+        "votes": 0
+    }
