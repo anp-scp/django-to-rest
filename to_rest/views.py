@@ -49,7 +49,9 @@ def getTempViewSet(childModel, childSerializer, viewParams):
     #set defaults
     attributes = dict()
     attributes[constants.SERIALIZER_CLASS] = childSerializer
-    attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
+    #attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
+    if REST_FRAMEWORK_SETTINGS is None or REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, None) is None:
+        attributes[constants.FILTER_BACKENDS] = defaultFilterBackends
     if isDefaultSerializer(childSerializer):
         attributes[constants.FILTERSET_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation or x.many_to_one)]
         attributes[constants.SEARCH_FIELDS] = [x.name for x in childModel._meta.get_fields() if (not x.is_relation)] #no relational field by default as there could be large number of relational lookups possible
@@ -295,7 +297,9 @@ def getObjectViewSetAttributes(model, modelSerializer, customViewParams):
     attributes["queryset"] = model.objects.all()
     attributes["serializer_class"] = modelSerializer
     attributes["list"] = list
-    attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
+    #attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
+    if REST_FRAMEWORK_SETTINGS is None or REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, None) is None:
+        attributes[constants.FILTER_BACKENDS] = defaultFilterBackends
     if isDefaultSerializer(modelSerializer):
         attributes[constants.FILTERSET_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation or x.many_to_one)]
         attributes[constants.SEARCH_FIELDS] = [x.name for x in model._meta.get_fields() if (not x.is_relation)] #no relational field by default as there could be large number of relational lookups possible
