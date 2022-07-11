@@ -10,6 +10,10 @@ from django.conf import settings
 class StudenBasicTestWithDefaultSettings(APITestCase):
     """
     These tests are to make sure that the default tests are picked from settings or not.
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test test_basics_defaults --settings=tests.settings_test_basics_defaults
     """
 
     def setUp(self):

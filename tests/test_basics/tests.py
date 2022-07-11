@@ -5,6 +5,16 @@ from test_basics.models import Student
 # Create your tests here.
 
 class StudentCRUDTest(APITestCase):
+    """
+    These tests are for testing basic crud operations.
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test
+    # Note: while running these tests all other test apps that are in default settings.py
+    will also run
+    """
+
     def test_case_list_students_when_no_object_exists(self):
         """
         Test Case: test_basics-StudentCRUDTest-1
