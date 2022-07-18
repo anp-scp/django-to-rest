@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from test_basics.models import Student
+from test_basics.models import Student, StudentWithCustomSerializer
 # Create your tests here.
 
 class StudentCRUDTest(APITestCase):
@@ -10,9 +10,8 @@ class StudentCRUDTest(APITestCase):
     Command to run these tests:
     $ pwd
     /.../django-to-rest/tests
-    $ python3 manage.py test
-    # Note: while running these tests all other test apps that are in default settings.py
-    will also run
+    $ python3 manage.py test test_basics
+    Note: while running these tests all other test apps that are in default settings.py will also run
     """
 
     def test_case_list_students_when_no_object_exists(self):
@@ -171,3 +170,35 @@ class StudentCRUDTest(APITestCase):
         self.assertEqual(response.data[0]['name'], 'Ryan Shaw')
         self.assertEqual(response.data[1]['name'], 'Ryan Doe')
         self.assertEqual(response.data[2]['name'], 'John Doe')
+    
+class StudentCustomSerializer(APITestCase):
+    """
+    These tests are for testing scenarios for custom serializer.
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test
+    Note: while running these tests all other test apps that are in default settings.py will also run
+    """
+
+    def test_case_create_list_student_object(self):
+        """
+        Test Case: test_basics-StudentCustomSerializer-1
+        Ensure that we can create a new student object
+        """
+        url = reverse('test_basics_studentwithcustomserializer-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomSerializer.objects.count(),1)
+        data = {'name': 'Ryan Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomSerializer.objects.count(), 2)
+
+        url = reverse('test_basics_studentwithcustomserializer-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.data[0]['name'], 'John Doe')
+        self.assertEqual(response.data[0].get('year', False), False)
+        self.assertEqual(response.data[1]['name'], 'Ryan Doe')
+        self.assertEqual(response.data[1].get('year', False), False)
