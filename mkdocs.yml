@@ -24,7 +24,7 @@ theme:
     code: Roboto Mono
   palette: 
     - scheme: default
-      primary: white
+      primary: blue grey
       accent: amber
       toggle:
         icon: material/brightness-7
