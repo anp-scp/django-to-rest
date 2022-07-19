@@ -177,7 +177,7 @@ class StudentCustomSerializer(APITestCase):
     Command to run these tests:
     $ pwd
     /.../django-to-rest/tests
-    $ python3 manage.py test
+    $ python3 manage.py test test_basics
     Note: while running these tests all other test apps that are in default settings.py will also run
     """
 
@@ -202,3 +202,21 @@ class StudentCustomSerializer(APITestCase):
         self.assertEqual(response.data[0].get('year', False), False)
         self.assertEqual(response.data[1]['name'], 'Ryan Doe')
         self.assertEqual(response.data[1].get('year', False), False)
+    
+    def test_case_update_student_object(self):
+        """
+        Test Case: test_basics-StudentCustomSerializer-2
+        Ensure that we can create a new student object
+        """
+        url = reverse('test_basics_studentwithcustomserializer-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomSerializer.objects.count(),1)
+        id = response.data['id']
+        url = reverse('test_basics_studentwithcustomserializer-detail', args=[id])
+        data = {'name': 'Ryan Doe'}
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(StudentWithCustomSerializer.objects.count(), 1)
+        self.assertEqual(StudentWithCustomSerializer.objects.get(id=id).name, 'Ryan Doe')

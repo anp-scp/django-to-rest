@@ -10,3 +10,8 @@ class StudentWithCustomSerializerSerializer(serializers.Serializer):
         from test_basics.models import StudentWithCustomSerializer #using local import to prevernt
         #circular import
         return StudentWithCustomSerializer.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+        return instance
