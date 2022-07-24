@@ -52,3 +52,5 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.tabbed:
       alternate_style: true
+  - toc:
+      permalink: true
