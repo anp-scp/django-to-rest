@@ -1,7 +1,8 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from test_basics.models import Student, StudentWithCustomSerializer
+from test_basics.models import Student, StudentWithCustomSerializer, StudentWithCustomAuthAndPermission
+from django.contrib.auth.models import User
 # Create your tests here.
 
 class StudentCRUDTest(APITestCase):
@@ -206,7 +207,7 @@ class StudentCustomSerializer(APITestCase):
     def test_case_update_student_object(self):
         """
         Test Case: test_basics-StudentCustomSerializer-2
-        Ensure that we can create a new student object
+        Ensure that we can update a new student object
         """
         url = reverse('test_basics_studentwithcustomserializer-list')
         data = {'name': 'John Doe'}
@@ -220,3 +221,159 @@ class StudentCustomSerializer(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(StudentWithCustomSerializer.objects.count(), 1)
         self.assertEqual(StudentWithCustomSerializer.objects.get(id=id).name, 'Ryan Doe')
+    
+    def test_case_delete_student_object(self):
+        """
+        Test Case: test_basics-StudentCustomSerializer-3
+        Ensure that we can delete a new student object
+        """
+        url = reverse('test_basics_studentwithcustomserializer-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomSerializer.objects.count(),1)
+        id = response.data['id']
+        url = reverse('test_basics_studentwithcustomserializer-detail', args=[id])
+        response = self.client.delete(url,format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(StudentWithCustomSerializer.objects.count(), 0)
+
+class StudentCustomAuthAndPermission(APITestCase):
+    """
+    These tests are for testing scenarios for custom permission classes and authentication classes.
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test test_basics
+    Note: while running these tests all other test apps that are in default settings.py will also run
+    """
+
+    def setUp(self):
+        User.objects.create_superuser(username='test', password='test@1234', email=None)
+        self.client.credentials(HTTP_AUTHORIZATION="Basic dGVzdDp0ZXN0QDEyMzQ=")
+
+    def test_case_list_student_object(self):
+        """
+        Test Case: test_basics-StudentCustomAuthAndPermission-1
+        Ensure that we can create a new student object with authentication
+        """
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        data = {'name': 'Ryan Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 2)
+
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.data[0]['name'], 'John Doe')
+        self.assertEqual(response.data[0].get('year', False), False)
+        self.assertEqual(response.data[1]['name'], 'Ryan Doe')
+        self.assertEqual(response.data[1].get('year', False), False)
+    
+    def test_case_update_student_object(self):
+        """
+        Test Case: test_basics-StudentCustomAuthAndPermission-2
+        Ensure that we can update a new student object with authentication
+        """
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        id = response.data['id']
+        url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
+        data = {'name': 'Ryan Doe'}
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 1)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.get(id=id).name, 'Ryan Doe')
+    
+    def test_case_delete_student_object(self):
+        """
+        Test Case: test_basics-StudentCustomAuthAndPermission-3
+        Ensure that we can delete a new student object with authentication
+        """
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        id = response.data['id']
+        url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
+        response = self.client.delete(url,format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 0)
+    
+    def test_case_create_object_without_auth(self):
+        """
+        Test Case: test_basics-StudentCustomAuthAndPermission-4
+        Ensure that we cannot create a new student object without auth
+        """
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        data = {'name': 'John Doe'}
+        self.client.credentials()
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_case_list_student_object_without_auth(self):
+        """
+        Test Case: test_basics-StudentCustomAuthAndPermission-5
+        Ensure that we can read objects without authentication
+        """
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        data = {'name': 'Ryan Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 2)
+
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        self.client.credentials()
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['name'], 'John Doe')
+        self.assertEqual(response.data[0].get('year', False), False)
+        self.assertEqual(response.data[1]['name'], 'Ryan Doe')
+        self.assertEqual(response.data[1].get('year', False), False)
+    
+    def test_case_update_student_object_without_auth(self):
+        """
+        Test Case: test_basics-StudentCustomAuthAndPermission-6
+        Ensure that we cannot update an object without auth
+        """
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        id = response.data['id']
+        url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
+        data = {'name': 'Ryan Doe'}
+        self.client.credentials()
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.get(id=id).name, 'John Doe')
+
+    def test_case_delete_student_object_without_auth(self):
+        """
+        Test Case: test_basics-StudentCustomAuthAndPermission-7
+        Ensure that we cannot delete student object without authentication
+        """
+        url = reverse('test_basics_studentwithcustomauthandpermission-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        id = response.data['id']
+        url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
+        self.client.credentials()
+        response = self.client.delete(url,format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 1)
