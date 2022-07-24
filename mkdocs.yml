@@ -11,6 +11,7 @@ nav:
 
 theme: 
   name: material
+  custom_dir: docs_overrides
   icon:
     logo: material/book
   favicon: img/small_logo_grey.png
