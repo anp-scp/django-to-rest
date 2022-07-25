@@ -1,8 +1,4 @@
----
-title: Overview
-hide:
-  - navigation
----
+## django-to-rest
 ![Django To Rest](docs/img/large_logo_black.png)
 
 Django To Rest is small tool that helps to expose REST api(s) for
