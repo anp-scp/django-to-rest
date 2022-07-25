@@ -36,6 +36,7 @@ jobs:
           python3 setup.py sdist
       -
         name: Publish to Test PyPI
+        if: "contains(github.event.commits[0].message, '[testpypi]')"
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
