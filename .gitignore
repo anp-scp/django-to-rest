@@ -3,3 +3,4 @@
 /django_to_rest.egg-info
 /virtualenv
 /tests/**/__pycache__
+/site/
