@@ -26,7 +26,7 @@ jobs:
       -
         name: Perform testing
         run: |
-          python3 -m install ./
+          python3 -m pip install ./
           cd tests
           python3 manage.py test test_basics
           python3 manage.py test test_basics_defaults --settings=tests.settings_test_basics_defaults
