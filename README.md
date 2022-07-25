@@ -56,10 +56,10 @@ Now create two models as shown below:
 from django.db import models
 from django.utils import timezone
 from django.contrib import admin
-from to_rest.decorators import restifyModel # (1)
+from to_rest.decorators import restifyModel # Import the decorator from the library
 
 # Create your models here.
-@restifyModel # (2)
+@restifyModel # Note the way decorator is used
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
@@ -68,7 +68,7 @@ class Question(models.Model):
         return self.question_text
 
 
-@restifyModel # (3)
+@restifyModel # Note the way decorator is used
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE,related_name='choices')
     choice_text = models.CharField(max_length=200)
@@ -78,10 +78,6 @@ class Choice(models.Model):
         return self.choice_text
 ```
 
-1. Import the decorator from the library
-2. Note the way decorator is used
-3. Note the way decorator is used
-
 Note the use of the decorators. We just need to use the decorator and all the views and serializers would be created during startup. But apart from from that, we need one more line to add in `urls.py` of the project (not any app) as shown below:
 ```py title="urls.py" linenums="1"
 from to_rest import utils
@@ -89,10 +85,8 @@ from to_rest import utils
 urlpatterns = [
         ...
         ]
-urlpatterns.extend(utils.restifyApp('rest/v1')) # (1)
+urlpatterns.extend(utils.restifyApp('rest/v1')) # call this method to add the urls in url patterns. Here the parameter 'rest/v1' is the prefix to be used in the url.
 ```
-
-1. call this method to add the urls in url patterns. Here the parameter 'rest/v1' is the prefix to be used in the url.
 
 That's all. Now start the server. And check the dev url `http://127.0.0.1:8000/`. Below is an example with httpie:
 
