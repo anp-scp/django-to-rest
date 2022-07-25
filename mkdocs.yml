@@ -1,5 +1,6 @@
 site_name: Django To Rest Docs
 dev_addr: 127.0.0.1:8080
+site_url: https://anp-scp.github.io/django-to-rest
 repo_url: https://github.com/anp-scp/django-to-rest
 
 nav:

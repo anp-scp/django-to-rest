@@ -37,12 +37,12 @@ Django to Rest need following requirements :
 **Installation**
 ================
 
-Following are the current installation steps
+django-to-rest is published as a package and can be installed using pip.
+Install with (consider creating a virtual environment):
 
--  Download the build ``django-to-rest-0.1.tar.gz``
--  Go to the directory where the build is located
--  Command: ``python3 -m pip install django-to-rest-0.1.tar.gz``
--  Above command will install all dependencies (except Python itself)
+::
+
+   pip install django-to-rest
 
 **Example**
 ===========
@@ -118,11 +118,7 @@ That’s all. Now start the server. And check the dev url
 **Quickstart**
 --------------
 
-The quick start guide is a shor tutorial which i sthe fastes way to get
-everything setup and get an overview of the tool.
-
-**Contribution**
-----------------
-
-Check the contribution guidelines to know about how to contribute to the
-project.
+The `quick start
+guide <https://anp-scp.github.io/django-to-rest/quickstart/>`__ is a
+short tutorial which is the fastest way to get everything setup and get
+an overview of the tool.
