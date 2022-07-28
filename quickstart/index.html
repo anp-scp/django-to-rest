@@ -535,6 +535,34 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../full_guide/adding_custom_auth/" class="md-nav__link">
+        Adding custom Authentication class
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../full_guide/adding_custom_permission/" class="md-nav__link">
+        Adding custom Permission class
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -719,7 +747,7 @@
 
 <h2 id="setup"><strong>Setup</strong><a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
 <p>Let us start fresh. Ensure that Python 3.8.x is already installed. It is always better to use 
-virtual environment to isolate your work with other stuffs. Let us create active a virtual env inside the directory <code>quickstart</code>:</p>
+virtual environment to isolate your work with other stuffs. Let us create and activate a virtual env inside the directory <code>quickstart</code>:</p>
 <div class="highlight"><pre><span></span><code># Create a virtual environment
 $ pwd
 /.../quickstart
@@ -727,9 +755,7 @@ $ python3 -m venv qs
 $ source qs/bin/activate
 </code></pre></div>
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code># Download the package and install it. Installing below will install dependencies like 
-# django, if not already installed
-$ (qs) python3 -m pip install django-to-rest-0.1.tar.gz
+<div class="highlight"><pre><span></span><code>pip install django-to-rest
 </code></pre></div>
 <h3 id="creation-of-a-django-project-and-app">Creation of a django project and app<a class="headerlink" href="#creation-of-a-django-project-and-app" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code># Create a django project
@@ -830,7 +856,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 <h2 id="use-django-to-rest"><strong>Use django-to-rest</strong><a class="headerlink" href="#use-django-to-rest" title="Permanent link">&para;</a></h2>
 <p>Now as we have some data to play with, let us use <code>django-to-rest</code> to create our api. To do that,
 we need to mark the models for which the REST apis need to be created. Let us mark our models for
-restification!!!:</p>
+restification!!! (by restification, we mean to create REST api(s) from models):</p>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">/.../quickstart/mysite/polls/models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-2-3"> 3</a></span>

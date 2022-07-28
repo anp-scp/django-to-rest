@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://anp-scp.github.io/django-to-rest/full_guide/adding_custom_serializer/">
+        <link rel="canonical" href="https://anp-scp.github.io/django-to-rest/full_guide/adding_custom_auth/">
       
       <link rel="icon" href="../../img/small_logo_grey.png">
       <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
     
     
       
-        <title>Adding custom Serializer - Django To Rest Docs</title>
+        <title>Adding custom Authentication class - Django To Rest Docs</title>
       
     
     
@@ -105,7 +105,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Adding custom Serializer
+              Adding custom Authentication class
             
           </span>
         </div>
@@ -360,6 +360,20 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../adding_custom_serializer/" class="md-nav__link">
+        Adding custom Serializer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -370,23 +384,9 @@
       
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Adding custom Serializer
-      </a>
-      
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../adding_custom_auth/" class="md-nav__link">
         Adding custom Authentication class
       </a>
+      
     </li>
   
 
@@ -440,13 +440,13 @@
             <article class="md-content__inner md-typeset">
               
                 
-  <a href="https://github.com/anp-scp/django-to-rest/edit/master/docs/full_guide/adding_custom_serializer.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/anp-scp/django-to-rest/edit/master/docs/full_guide/adding_custom_auth.md" title="Edit this page" class="md-content__button md-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
 
-  <h1>Adding custom Serializer</h1>
+  <h1>Adding custom Authentication class</h1>
 
 <p>As mentioned earlier, <code>to_rest.decorators.restifyModel</code> decorator can also be used with parameters. The custom serializer needs to be passed via the parameter <code>customViewParams</code>. Let us consider the below model:</p>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
@@ -457,72 +457,49 @@
 <span class="normal"><a href="#__codelineno-0-6">6</a></span>
 <span class="normal"><a href="#__codelineno-0-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">class</span> <span class="nc">StudentWithCustomSerializer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">class</span> <span class="nc">StudentWithCustomAuthAndPermission</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5"></a>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a>        <span class="k">return</span> <span class="s2">&quot;[name=</span><span class="si">{}</span><span class="s2">, year=</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a>        <span class="k">return</span> <span class="s2">&quot;[name=</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<p>And now let us create a simple serializer for the same.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">serializers.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-1-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="k">class</span> <span class="nc">StudentWithCustomSerializerSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+<p>Now let us create a new file in the same working directory called <code>view_params.py</code> and create the dictionary <code>customViewParamsCustomAuthAndPermission</code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">view_params.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span>
+<span class="normal"><a href="#__codelineno-1-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">to_rest</span> <span class="kn">import</span> <span class="n">constants</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">IsAuthenticatedOrReadOnly</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">rest_framework.authentication</span> <span class="kn">import</span> <span class="n">BasicAuthentication</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="nb">id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validated_data</span><span class="p">):</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9"></a>        <span class="kn">from</span> <span class="nn">test_basics.models</span> <span class="kn">import</span> <span class="n">StudentWithCustomSerializer</span> <span class="c1"># (1)</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a>        <span class="k">return</span> <span class="n">StudentWithCustomSerializer</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">**</span><span class="n">validated_data</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="n">customViewParamsCustomAuthAndPermission</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="n">customViewParamsCustomAuthAndPermission</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">AUTHENTICATION_CLASSES</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">BasicAuthentication</span><span class="p">]</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="n">customViewParamsCustomAuthAndPermission</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">PERMISSION_CLASSES</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">IsAuthenticatedOrReadOnly</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
-<ol>
-<li>using local import to prevernt circular import</li>
-</ol>
-<p>Note that at line 9 in the above code the model <code>StudentWithCustomSerializer</code> is imported locally in the method. This is done to prevent circular import issues. Since, we need to provide this custom serializer to the decorator on the model, and if the model here is imported globally then it would be like the model is imported in the models.py itself. Thus, raising the <code>Import Error</code> due to circular import issues.</p>
-<p>Now let us create a new file in the same working directory called <code>view_params.py</code> and create the dictionary <code>customViewParams</code>:</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">view_params.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span>
-<span class="normal"><a href="#__codelineno-2-4">4</a></span>
-<span class="normal"><a href="#__codelineno-2-5">5</a></span>
-<span class="normal"><a href="#__codelineno-2-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">to_rest</span> <span class="kn">import</span> <span class="n">constants</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">test_basics</span> <span class="kn">import</span> <span class="n">serializers</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># Create your views here.</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="n">customViewParams</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="n">customViewParams</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">SERIALIZER_CLASS</span><span class="p">]</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">StudentWithCustomSerializerSerializer</span>
+<p>Now, let us go back to models.py and see how to provide the authentication classes as viewset attribute.</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">to_rest.decorators</span> <span class="kn">import</span> <span class="n">restifyModel</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">test_basics</span> <span class="kn">import</span> <span class="n">view_params</span> <span class="c1">#Here, test_basics is the app directory</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nd">@restifyModel</span><span class="p">(</span><span class="n">customViewParams</span><span class="o">=</span><span class="n">view_params</span><span class="o">.</span><span class="n">customViewParamsCustomAuthAndPermission</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="k">class</span> <span class="nc">StudentWithCustomAuthAndPermission</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="k">return</span> <span class="s2">&quot;[name=</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<p>Now, let us go back to models.py and see how to provide the custom serializer that we created.</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-3-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">to_rest.decorators</span> <span class="kn">import</span> <span class="n">restifyModel</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kn">from</span> <span class="nn">test_basics.view_params</span> <span class="kn">import</span> <span class="n">customViewParams</span> <span class="c1">#Here, test_basics is the app directory</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="nd">@restifyModel</span><span class="p">(</span><span class="n">customViewParams</span><span class="o">=</span><span class="n">customViewParams</span><span class="p">)</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">class</span> <span class="nc">StudentWithCustomSerializer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8"></a>
-<a id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10"></a>        <span class="k">return</span> <span class="s2">&quot;[name=</span><span class="si">{}</span><span class="s2">, year=</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-<p>Note the way <code>customViewParams</code> is passed to the decorator at line 5.</p>
+<p>Note the way <code>customViewParamsCustomAuthAndPermission</code> is passed to the decorator at line 5. Since, the authentication classes are part of the dictionary it would be included as the part of corresponding viewset for the model.</p>
 
               
             </article>
@@ -543,7 +520,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../marking_model_for_REST/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Marking models to create REST APIs" rel="prev">
+        <a href="../adding_custom_serializer/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Adding custom Serializer" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -552,20 +529,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Marking models to create REST APIs
+              Adding custom Serializer
             </div>
           </div>
         </a>
       
       
         
-        <a href="../adding_custom_auth/" class="md-footer__link md-footer__link--next" aria-label="Next: Adding custom Authentication class" rel="next">
+        <a href="../adding_custom_permission/" class="md-footer__link md-footer__link--next" aria-label="Next: Adding custom Permission class" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Adding custom Authentication class
+              Adding custom Permission class
             </div>
           </div>
           <div class="md-footer__button md-icon">
