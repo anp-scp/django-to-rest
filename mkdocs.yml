@@ -9,6 +9,8 @@ nav:
   - 'Full Guide':
     - full_guide/marking_model_for_REST.md
     - full_guide/adding_custom_serializer.md
+    - full_guide/adding_custom_auth.md
+    - full_guide/adding_custom_permission.md
 
 theme: 
   name: material
