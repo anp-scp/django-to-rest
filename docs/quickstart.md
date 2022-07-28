@@ -6,7 +6,7 @@ hide:
 
 ## **Setup**
 Let us start fresh. Ensure that Python 3.8.x is already installed. It is always better to use 
-virtual environment to isolate your work with other stuffs. Let us create active a virtual env inside the directory `quickstart`:
+virtual environment to isolate your work with other stuffs. Let us create and activate a virtual env inside the directory `quickstart`:
 
     # Create a virtual environment
     $ pwd
@@ -16,9 +16,7 @@ virtual environment to isolate your work with other stuffs. Let us create active
 
 ### Installation
 
-    # Download the package and install it. Installing below will install dependencies like 
-    # django, if not already installed
-    $ (qs) python3 -m pip install django-to-rest-0.1.tar.gz
+    pip install django-to-rest
 
 ### Creation of a django project and app
 
@@ -109,7 +107,7 @@ Since, our app and DB is setup, let us create some dummy data to play with them 
 
 Now as we have some data to play with, let us use `django-to-rest` to create our api. To do that,
 we need to mark the models for which the REST apis need to be created. Let us mark our models for
-restification!!!:
+restification!!! (by restification, we mean to create REST api(s) from models):
 
 ```py title="/.../quickstart/mysite/polls/models.py" linenums="1"
 from django.db import models

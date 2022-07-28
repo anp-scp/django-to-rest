@@ -41,7 +41,7 @@ For example:
     * `customViewParams (dict)`: To provide customized methods and variables for view set. For example, custom serializer, list method, create method, retreive method, update method, partial_update method, delete method, get_object methhod, get_queryset, et.
     * `excludeFields (list)`: The fields that needs to be excluded from the JSON object. Provided fields will not be included in the serializer. If customSerializer is provided then this parameter will be ignored.
     * `methodFields (list)`: The list of methods as read only fields. This can be used to include the model's methods output as field. This include only those field that don't take any parameter.
-    * `requiredReverseRelFields (list)`: Whenever a one to one relation is created, a reverse field is also included in the serializer for the model in the other side of relationship To make those a required field in post and put. Provide the list of fields.
+    * `requiredReverseRelFields (list)`: Whenever a one to one relation is created, a reverse field is also included in the serializer for the model in the other side of relationship. To make those a required field in post and put. Provide the list of fields.
 
 For example:
 

@@ -8,9 +8,9 @@ hide:
 Django To Rest is small tool that helps to expose REST api(s) for
 django models with minimum effort. Some of the features are:
 
-* Just add a decorator atop of a model and REST apis is created. That's the work!!!
+* Just add a decorator atop of a model and REST api(s) are created. That's the work!!!
 * Options like filtering and ordering are avilable by default for model fields
-* Easy customizations via the decorator itself
+* Easy customisations via the decorator itself
 * *Summary:* Less time??? Just install the tool and the decorator. Done!!!
 
 * * *
@@ -39,7 +39,7 @@ django-to-rest is published as a package and can be installed using pip. Install
 
 Let us have a look on an example of how the tool can be used to expose REST API.
 
-Make sure that `djangorestframework` is installed and included in `INSTALLED_APPS ` settings.py as shown below:
+Make sure that `djangorestframework` is installed and included in `INSTALLED_APPS ` in settings.py as shown below:
 ```py title="settings.py" linenums="1"
 ...
 INSTALLED_APPS = [
@@ -79,7 +79,7 @@ class Choice(models.Model):
 2. Note the way decorator is used
 3. Note the way decorator is used
 
-Note the use of the decorators. We just need to use the decorator and all the views and serializers would be created during startup. But apart from from that, we need one more line to add in `urls.py` of the project (not any app) as shown below:
+Note the use of the decorators. We just need to use the decorator and all the views and serializers would be created during startup. But apart from that, we need one more line to add in `urls.py` of the project (not any app) as shown below:
 ```py title="urls.py" linenums="1"
 from to_rest import utils
 
@@ -113,5 +113,4 @@ That's all. Now start the server. And check the dev url `http://127.0.0.1:8000/`
 
 ## **Quickstart**
 
-The [quick start guide](quickstart.md) is a shor tutorial which i sthe fastes way to get everything setup and get
-an overview of the tool.
+The [quick start guide](quickstart.md) is a short tutorial which is the fastest way to get everything setup and get an overview of the tool.
