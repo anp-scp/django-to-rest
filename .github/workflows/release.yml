@@ -1,4 +1,4 @@
-name: Publish Python distributions to PyPI and TestPyPI
+name: CI
 on:
     push:
       branches: [master]

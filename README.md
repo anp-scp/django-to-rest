@@ -1,6 +1,10 @@
 ## django-to-rest
-![Django To Rest](docs/img/large_logo_black.png)
+<!--![Django To Rest](docs/img/large_logo_black.png)-->
+<img src="docs/img/large_logo_black.png" width="300" />
 
+* * *
+[![PyPI version](https://badge.fury.io/py/django-to-rest.svg)](https://badge.fury.io/py/django-to-rest) ![CI Passing](https://github.com/anp-scp/django-to-rest/actions/workflows/release.yml/badge.svg)
+* * *
 Django To Rest is small tool that helps to expose REST api(s) for
 django models with minimum effort. Some of the features are:
 
