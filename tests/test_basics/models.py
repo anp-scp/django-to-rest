@@ -29,3 +29,10 @@ class StudentWithCustomAuthAndPermission(models.Model):
     
     def __str__(self):
         return "[name={}]".format(self.name)
+
+@restifyModel(customViewParams=view_params.customViewParamsCustomThrottling)
+class StudentWithCustomThrottling(models.Model):
+    name = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return "[name={}]".format(self.name)

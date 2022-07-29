@@ -33,6 +33,7 @@ FILTER_BACKENDS = "filter_backends"
 ORDERING = "ordering"
 AUTHENTICATION_CLASSES = "authentication_classes"
 PERMISSION_CLASSES = "permission_classes"
+THROTTLE_SCOPE = "throttle_scope"
 #affixes
 ONE_TO_MANY_LIST_ACTION = "oneToManyList_"
 MANY_TO_MANY_LIST_ACTION = "manyToManyList_"

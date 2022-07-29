@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from test_basics.models import Student, StudentWithCustomSerializer, StudentWithCustomAuthAndPermission
+from test_basics.models import Student, StudentWithCustomSerializer, StudentWithCustomAuthAndPermission, StudentWithCustomThrottling
 from django.contrib.auth.models import User
 # Create your tests here.
 
@@ -377,3 +377,29 @@ class StudentCustomAuthAndPermission(APITestCase):
         response = self.client.delete(url,format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 1)
+
+class StudentCustomThrottling(APITestCase):
+    """
+    These tests are for testing scenarios for custom throttling options as view set attributes.
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test test_basics
+    Note: while running these tests all other test apps that are in default settings.py will also run
+    """
+
+    def test_case_throttling(self):
+        """
+        Test Case: test_basics-StudentCustomThrottling-1
+        Ensure that we cannot hit an api more than 5 times per minute
+        """
+        url = reverse('test_basics_studentwithcustomthrottling-list')
+        data = {'name': 'John Doe'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(StudentWithCustomThrottling.objects.count(),1)
+        for i in range(0,4):
+            response = self.client.get(url, format='json')
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)

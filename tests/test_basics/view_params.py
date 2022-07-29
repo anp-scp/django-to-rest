@@ -9,3 +9,6 @@ customViewParamsCustomSerializer[constants.SERIALIZER_CLASS] = serializers.Stude
 customViewParamsCustomAuthAndPermission = dict()
 customViewParamsCustomAuthAndPermission[constants.AUTHENTICATION_CLASSES] = [BasicAuthentication]
 customViewParamsCustomAuthAndPermission[constants.PERMISSION_CLASSES] = [IsAuthenticatedOrReadOnly]
+
+customViewParamsCustomThrottling = dict()
+customViewParamsCustomThrottling[constants.THROTTLE_SCOPE] = "studentCustomThrottle"
