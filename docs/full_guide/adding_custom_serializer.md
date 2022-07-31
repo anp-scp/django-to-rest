@@ -2,7 +2,11 @@
 title: Adding custom Serializer
 ---
 
-As mentioned earlier, `to_rest.decorators.restifyModel` decorator can also be used with parameters. The custom serializer needs to be passed via the parameter `customViewParams`. Let us consider the below model:
+!!! Note
+
+    It is advised to go through point 2 of [Marking models to create REST APIs](marking_model_for_REST.md)
+
+Let us consider the below model:
 
 ```py title="models.py" linenums="1"
 from django.db import models
@@ -14,10 +18,11 @@ class StudentWithCustomSerializer(models.Model):
         return "[name={}, year={}]".format(self.name, self.year)
 ```
 
-And now let us create a simple serializer for the same.
+A simple serializer for the model above is given below:
 
 ``` py title="serializers.py" linenums="1"
 from rest_framework import serializers
+from test_basics.models import StudentWithCustomSerializer # (1)
 
 class StudentWithCustomSerializerSerializer(serializers.Serializer):
 
@@ -25,33 +30,35 @@ class StudentWithCustomSerializerSerializer(serializers.Serializer):
     name = serializers.CharField()
 
     def create(self, validated_data):
-        from test_basics.models import StudentWithCustomSerializer # (1)
         return StudentWithCustomSerializer.objects.create(**validated_data)
 ```
 
-1. using local import to prevernt circular import
+1. Here, test_basics is the directory of the app
 
-Note that at line 9 in the above code the model `StudentWithCustomSerializer` is imported locally in the method. This is done to prevent circular import issues. Since, we need to provide this custom serializer to the decorator on the model, and if the model here is imported globally then it would be like the model is imported in the models.py itself. Thus, raising the `Import Error` due to circular import issues.
-
-Now let us create a new file in the same working directory called `view_params.py` and create the dictionary `customViewParams`:
+As mentioned in [Marking models to create REST APIs](marking_model_for_REST.md), all the custom parameters for view needs to be mentioned in a `ViewParams` class and all such class needs to be in module `view_params` in the directory of the app. Let us create a new file in the same working directory called `view_params.py` and create a class as shown below:
 
 ``` py title="view_params.py" linenums="1"
 from to_rest import constants
-from test_basics import serializers
+from test_basics import serializers # (1)
+from to_rest.utils import ViewParams
 
-# Create your views here.
-customViewParams = dict()
-customViewParams[constants.SERIALIZER_CLASS] = serializers.StudentWithCustomSerializerSerializer
+class CustomSerializer(ViewParams):
+
+    def getParams():
+        temp = dict()
+        temp[constants.SERIALIZER_CLASS] = serializers.StudentWithCustomSerializerSerializer
+        return temp
 ```
 
-Now, let us go back to models.py and see how to provide the custom serializer that we created.
+1. Here, test_basics is the directory of the app
+
+Note that the dictionary returned by `getParams()` must contain an entry with key `to_rest.constants.SERIALIZER_CLASS`. Now, let us go back to models.py and see how to provide the custom serializer that we created.
 
 ```py title="models.py" linenums="1"
 from django.db import models
 from to_rest.decorators import restifyModel
-from test_basics.view_params import customViewParams #Here, test_basics is the app directory
 
-@restifyModel(customViewParams=customViewParams)
+@restifyModel(customViewParams='CustomSerializer')
 class StudentWithCustomSerializer(models.Model):
     name = models.CharField(max_length=50)
     
@@ -59,4 +66,4 @@ class StudentWithCustomSerializer(models.Model):
         return "[name={}, year={}]".format(self.name, self.year)
 ```
 
-Note the way `customViewParams` is passed to the decorator at line 5.
+Note the way `CustomSerializer` is passed to the decorator at line 4.

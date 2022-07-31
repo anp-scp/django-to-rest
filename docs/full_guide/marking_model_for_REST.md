@@ -38,18 +38,18 @@ For example:
     3. Note the way decorator is used
 
 2. **With Parameters**: The decorator accepts the following parameters
-    * `customViewParams (dict)`: To provide customized methods and variables for view set. For example, custom serializer, list method, create method, retreive method, update method, partial_update method, delete method, get_object methhod, get_queryset, et.
+    * `customViewParams (str)`: This accepts the name of a `ViewParams` class. The `ViewParams` class needs to override the class method `getParams()` to provide customized methods and attributes for view set. For example, custom serializer, list method, create method, retreive method, update method, partial_update method, delete method, get_object method, get_queryset, etc. The `getParams()` method must return a disctionary. 
     * `excludeFields (list)`: The fields that needs to be excluded from the JSON object. Provided fields will not be included in the serializer. If customSerializer is provided then this parameter will be ignored.
     * `methodFields (list)`: The list of methods as read only fields. This can be used to include the model's methods output as field. This include only those field that don't take any parameter.
     * `requiredReverseRelFields (list)`: Whenever a one to one relation is created, a reverse field is also included in the serializer for the model in the other side of relationship. To make those a required field in post and put. Provide the list of fields.
 
-For example:
+An example of passing custom serializer is given below:
 
 === "serializers.py"
 
     ``` py linenums="1"
     from rest_framework import serializers
-
+    from test_basics.models import StudentWithCustomSerializer # (1)
 
     class StudentWithCustomSerializerSerializer(serializers.Serializer):
 
@@ -57,37 +57,43 @@ For example:
         name = serializers.CharField()
 
         def create(self, validated_data):
-            from test_basics.models import StudentWithCustomSerializer # (1)
             return StudentWithCustomSerializer.objects.create(**validated_data)
     ```
-
-    1. using local import to prevernt circular import
+    
+    1. Here, test_basics is the directory of the app
 
 === "view_params.py"
 
     ``` py linenums="1"
     from to_rest import constants
-    from test_basics import serializers
+    from test_basics import serializers # (1)
+    from to_rest.utils import ViewParams
 
-    # Create your views here.
-    customViewParams = dict()
-    customViewParams[constants.SERIALIZER_CLASS] = serializers.StudentWithCustomSerializerSerializer
+    class CustomSerializer(ViewParams):
+
+        def getParams():
+            temp = dict()
+            temp[constants.SERIALIZER_CLASS] = serializers.StudentWithCustomSerializerSerializer
+            return temp
     ```
+
+    1. Here, test_basics is the directory of the app
 
 === "models.py"
 
     ```py linenums="1"
     from django.db import models
     from to_rest.decorators import restifyModel
-    from test_basics.view_params import customViewParams #Here, test_basics is the app directory
 
-    @restifyModel(customViewParams=customViewParams)
+    @restifyModel(customViewParams='CustomSerializer')
     class StudentWithCustomSerializer(models.Model):
         name = models.CharField(max_length=50)
         
         def __str__(self):
             return "[name={}, year={}]".format(self.name, self.year)
     ```
+In the above example, a custom serializer has been created in `serializers.py`. A `ViewParams` class, `CustomSerializer` is created in `view_params.py` to provide the custom serializer. And the name of the `ViewParams` class is provided in decorator at line 4 in `models.py`. 
 
+!!! Note
 
-
+    All `ViewParams` classes must be in the module `view_params` in the directory of the app. That means, in the same location where `models.py` is located.  Django-to-rest will get the name of the `ViewParams` class from the decorator and will search that class in the module `view_params.` Hence, in the example above, `CustomSerializer` is created in `view_params.py`.

@@ -6,6 +6,18 @@ from to_rest import views
 from django.urls import path
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import routers
+from abc import ABC, abstractmethod
+import importlib
+
+class ViewParams(ABC):
+    """
+    Abstract class to provide custom view parameters. This class needs to be inherited to provide
+    custom view params.
+    """
+
+    @abstractmethod
+    def getParams():
+        pass
 
 def restifyApp(relativeUri):
     """
@@ -19,6 +31,16 @@ def restifyApp(relativeUri):
         list of urls (list)
     """
 
+    for entity in cfg.djangoToRestRegistry:
+        if cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_VIEW_PARAMS,False):
+            temp = cfg.djangoToRestRegistry[entity][constants.CUSTOM_VIEW_PARAMS]
+            appName = apps.get_model(entity)._meta.app_label
+            module = importlib.import_module(appName + '.' + 'view_params')
+            temp = getattr(module, temp)
+            customViewParams = temp.getParams()
+            cfg.djangoToRestRegistry[entity][constants.CUSTOM_SERIALIZER] = customViewParams.pop(constants.SERIALIZER_CLASS, None)
+            cfg.djangoToRestRegistry[entity][constants.CUSTOM_VIEW_PARAMS] = customViewParams
+    
     for entity in cfg.djangoToRestRegistry:
         model = apps.get_model(entity)
         customSerializer = cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_SERIALIZER,None)

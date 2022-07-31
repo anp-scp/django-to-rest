@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from test_basics.models import Student, StudentWithCustomSerializer, StudentWithCustomAuthAndPermission, StudentWithCustomThrottling
+from test_basics import models
 from django.contrib.auth.models import User
 # Create your tests here.
 
@@ -33,11 +33,11 @@ class StudentCRUDTest(APITestCase):
         data = {'name': 'John Doe', 'year': 2}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),1)
+        self.assertEqual(models.Student.objects.count(),1)
         id = response.data['id']
-        self.assertEqual(Student.objects.get(pk=id).id,id)
-        self.assertEqual(Student.objects.get(pk=id).name,'John Doe')
-        self.assertEqual(Student.objects.get(pk=id).year,2)
+        self.assertEqual(models.Student.objects.get(pk=id).id,id)
+        self.assertEqual(models.Student.objects.get(pk=id).name,'John Doe')
+        self.assertEqual(models.Student.objects.get(pk=id).year,2)
     
     def test_case_partial_update_object(self):
         """
@@ -48,12 +48,12 @@ class StudentCRUDTest(APITestCase):
         data = {'name': 'John Doe', 'year': 2}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),1)
+        self.assertEqual(models.Student.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_student-detail', args=[id])
         data = {'name': 'Johny Doe'}
         response = self.client.patch(url, data, format='json')
-        self.assertEqual(Student.objects.get(pk=id).name, 'Johny Doe')
+        self.assertEqual(models.Student.objects.get(pk=id).name, 'Johny Doe')
     
     def test_case_update_object(self):
         """
@@ -64,13 +64,13 @@ class StudentCRUDTest(APITestCase):
         data = {'name': 'John Doe', 'year': 2}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),1)
+        self.assertEqual(models.Student.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_student-detail', args=[id])
         data = {'name': 'Johny Doe', 'year': 3}
         response = self.client.patch(url, data, format='json')
-        self.assertEqual(Student.objects.get(pk=id).name, 'Johny Doe')
-        self.assertEqual(Student.objects.get(pk=id).year, 3)
+        self.assertEqual(models.Student.objects.get(pk=id).name, 'Johny Doe')
+        self.assertEqual(models.Student.objects.get(pk=id).year, 3)
     
     def test_case_delete_object(self):
         """
@@ -81,7 +81,7 @@ class StudentCRUDTest(APITestCase):
         data = {'name': 'John Doe', 'year': 2}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),1)
+        self.assertEqual(models.Student.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_student-detail', args=[id])
         response = self.client.delete(url, format='json')
@@ -99,13 +99,13 @@ class StudentCRUDTest(APITestCase):
         data = {'name': 'John Doe', 'year': 2}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),1)
+        self.assertEqual(models.Student.objects.count(),1)
         id1 = response.data['id']
         url = reverse('test_basics_student-list')
         data = {'name': 'Ryan Doe', 'year': 1}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),2)
+        self.assertEqual(models.Student.objects.count(),2)
         id2 = response.data['id']
         url = reverse('test_basics_student-list')
         response = self.client.get(url+"?year=2", format='json')
@@ -122,19 +122,19 @@ class StudentCRUDTest(APITestCase):
         data = {'name': 'John Doe', 'year': 2}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),1)
+        self.assertEqual(models.Student.objects.count(),1)
         id1 = response.data['id']
         url = reverse('test_basics_student-list')
         data = {'name': 'Ryan Doe', 'year': 1}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),2)
+        self.assertEqual(models.Student.objects.count(),2)
         id2 = response.data['id']
         url = reverse('test_basics_student-list')
         data = {'name': 'Ryan Shaw', 'year': 1}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),3)
+        self.assertEqual(models.Student.objects.count(),3)
         id3 = response.data['id']
         url = reverse('test_basics_student-list')
         response = self.client.get(url+"?search=Doe", format='json')
@@ -151,19 +151,19 @@ class StudentCRUDTest(APITestCase):
         data = {'name': 'John Doe', 'year': 2}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),1)
+        self.assertEqual(models.Student.objects.count(),1)
         id1 = response.data['id']
         url = reverse('test_basics_student-list')
         data = {'name': 'Ryan Doe', 'year': 1}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),2)
+        self.assertEqual(models.Student.objects.count(),2)
         id2 = response.data['id']
         url = reverse('test_basics_student-list')
         data = {'name': 'Ryan Shaw', 'year': 1}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(),3)
+        self.assertEqual(models.Student.objects.count(),3)
         id3 = response.data['id']
         url = reverse('test_basics_student-list')
         response = self.client.get(url+"?ordering=year,-name", format='json')
@@ -191,11 +191,11 @@ class StudentCustomSerializer(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomSerializer.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomSerializer.objects.count(),1)
         data = {'name': 'Ryan Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomSerializer.objects.count(), 2)
+        self.assertEqual(models.StudentWithCustomSerializer.objects.count(), 2)
 
         url = reverse('test_basics_studentwithcustomserializer-list')
         response = self.client.get(url, format='json')
@@ -213,14 +213,14 @@ class StudentCustomSerializer(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomSerializer.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomSerializer.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_studentwithcustomserializer-detail', args=[id])
         data = {'name': 'Ryan Doe'}
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(StudentWithCustomSerializer.objects.count(), 1)
-        self.assertEqual(StudentWithCustomSerializer.objects.get(id=id).name, 'Ryan Doe')
+        self.assertEqual(models.StudentWithCustomSerializer.objects.count(), 1)
+        self.assertEqual(models.StudentWithCustomSerializer.objects.get(id=id).name, 'Ryan Doe')
     
     def test_case_delete_student_object(self):
         """
@@ -231,12 +231,12 @@ class StudentCustomSerializer(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomSerializer.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomSerializer.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_studentwithcustomserializer-detail', args=[id])
         response = self.client.delete(url,format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(StudentWithCustomSerializer.objects.count(), 0)
+        self.assertEqual(models.StudentWithCustomSerializer.objects.count(), 0)
 
 class StudentCustomAuthAndPermission(APITestCase):
     """
@@ -261,11 +261,11 @@ class StudentCustomAuthAndPermission(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(),1)
         data = {'name': 'Ryan Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 2)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(), 2)
 
         url = reverse('test_basics_studentwithcustomauthandpermission-list')
         response = self.client.get(url, format='json')
@@ -283,14 +283,14 @@ class StudentCustomAuthAndPermission(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
         data = {'name': 'Ryan Doe'}
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 1)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.get(id=id).name, 'Ryan Doe')
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(), 1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.get(id=id).name, 'Ryan Doe')
     
     def test_case_delete_student_object(self):
         """
@@ -301,12 +301,12 @@ class StudentCustomAuthAndPermission(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
         response = self.client.delete(url,format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 0)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(), 0)
     
     def test_case_create_object_without_auth(self):
         """
@@ -328,11 +328,11 @@ class StudentCustomAuthAndPermission(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(),1)
         data = {'name': 'Ryan Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 2)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(), 2)
 
         url = reverse('test_basics_studentwithcustomauthandpermission-list')
         self.client.credentials()
@@ -352,14 +352,14 @@ class StudentCustomAuthAndPermission(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
         data = {'name': 'Ryan Doe'}
         self.client.credentials()
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.get(id=id).name, 'John Doe')
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.get(id=id).name, 'John Doe')
 
     def test_case_delete_student_object_without_auth(self):
         """
@@ -370,13 +370,13 @@ class StudentCustomAuthAndPermission(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(),1)
         id = response.data['id']
         url = reverse('test_basics_studentwithcustomauthandpermission-detail', args=[id])
         self.client.credentials()
         response = self.client.delete(url,format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(StudentWithCustomAuthAndPermission.objects.count(), 1)
+        self.assertEqual(models.StudentWithCustomAuthAndPermission.objects.count(), 1)
 
 class StudentCustomThrottling(APITestCase):
     """
@@ -397,9 +397,106 @@ class StudentCustomThrottling(APITestCase):
         data = {'name': 'John Doe'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(StudentWithCustomThrottling.objects.count(),1)
+        self.assertEqual(models.StudentWithCustomThrottling.objects.count(),1)
         for i in range(0,4):
             response = self.client.get(url, format='json')
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+
+class StudentCustomFiltering(APITestCase):
+    """
+    These tests are for testing scenarios for custom filtering options as view set attributes.
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test test_basics
+    Note: while running these tests all other test apps that are in default settings.py will also run
+    """
+
+    def setUp(self):
+        s1 = models.StudentWithCustomFiltering(name="John Doe", year=3, discipline="ME")
+        s1.save()
+        s2 = models.StudentWithCustomFiltering(name="Ryan Doe", year=2, discipline="CS")
+        s2.save()
+        s3 = models.StudentWithCustomFiltering(name="Ryan Shaw", year=1, discipline="CS")
+        s3.save()
+    
+    def test_case_default_ordering(self):
+        """
+        Test Case: test_basics-StudentCustomFiltering-1
+        Ensure that the custom default ordering works
+        """
+        url = reverse('test_basics_studentwithcustomfiltering-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['name'], 'Ryan Shaw')
+        self.assertEqual(response.data[1]['name'], 'Ryan Doe')
+        self.assertEqual(response.data[2]['name'], 'John Doe')
+
+    def test_case_filter_object(self):
+        """
+        Test Case: test_basics-StudentCustomFiltering-2
+        Ensure that custom filtering works
+        """
+        url = reverse('test_basics_studentwithcustomfiltering-list')
+        response = self.client.get(url+"?year=1&discipline=CS", format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for datum in response.data:
+            self.assertEqual(datum['year'], 1)
+            self.assertEqual(datum['discipline'],'CS')
+    
+    def test_case_search_object(self):
+        """
+        Test Case: test_basics-StudentCustomFiltering-3
+        Ensure that custom search works
+        """
+        url = reverse('test_basics_studentwithcustomfiltering-list')
+        response = self.client.get(url+"?search=Doe", format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for datum in response.data:
+            self.assertEqual('Doe' in datum['name'], True)
+    
+    def test_case_ordering_object(self):
+        """
+        Test Case: test_basics-StudentCustomFiltering-4
+        Ensure that custom ordering works
+        """
+        url = reverse('test_basics_studentwithcustomfiltering-list')
+        response = self.client.get(url+"?ordering=discipline,year", format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['name'], 'Ryan Shaw')
+        self.assertEqual(response.data[1]['name'], 'Ryan Doe')
+        self.assertEqual(response.data[2]['name'], 'John Doe')
+
+class StudentCustomFilterSetVSFilterFields(APITestCase):
+    """
+    These tests are for ensuring that filterset_class is given higher preference if both filterset_class and filterset_fields
+    are present. 
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test test_basics
+    Note: while running these tests all other test apps that are in default settings.py will also run
+    """
+
+    def setUp(self):
+        s1 = models.StudentWithFilterSetClassVSFilterSetField(name="John Doe", year=2, discipline="ME")
+        s1.save()
+        s2 = models.StudentWithFilterSetClassVSFilterSetField(name="Ryan Doe", year=1, discipline="CS")
+        s2.save()
+
+    def test_case_filter_object(self):
+        """
+        Test Case: test_basics-StudentCustomFilterSetVSFilterFields-1
+        Ensure that custom filtering works
+        """
+        url = reverse('test_basics_studentwithfiltersetclassvsfiltersetfield-list')
+        response = self.client.get(url+"?year=1&discipline=CS", format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for datum in response.data:
+            self.assertEqual(datum['year'], 1)
+            self.assertEqual(datum['discipline'],'CS')
+        response = self.client.get(url+"?name=John Doe", format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data),2)

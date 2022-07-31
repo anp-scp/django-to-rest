@@ -9,9 +9,10 @@ nav:
   - 'Full Guide':
     - full_guide/marking_model_for_REST.md
     - full_guide/adding_custom_serializer.md
-    - full_guide/adding_custom_auth.md
-    - full_guide/adding_custom_permission.md
-    - full_guide/adding_custom_throttling.md
+    - full_guide/adding_auth.md
+    - full_guide/adding_permission.md
+    - full_guide/adding_throttling.md
+    - full_guide/adding_custom_filtering.md
 
 theme: 
   name: material

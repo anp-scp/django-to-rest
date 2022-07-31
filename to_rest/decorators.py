@@ -32,8 +32,8 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
     Returns:
         decorated class or function object
     """
-    if customViewParams is not None and not isinstance(customViewParams, dict):
-        raise TypeError(constants.TYPE_ERROR_MESSAGE.format("customViewParams", "dict", type(customViewParams)))
+    if customViewParams is not None and not isinstance(customViewParams, str):
+        raise TypeError(constants.TYPE_ERROR_MESSAGE.format("customViewParams", "str", type(customViewParams)))
     if excludeFields is not None and not isinstance(excludeFields, list):
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("excludeFields", "list", type(excludeFields)))
     if methodFields is not None and not isinstance(methodFields, list):
@@ -56,7 +56,7 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
                 options[constants.CUSTOM_VIEW_PARAMS] = customViewParams
                 options[constants.EXCLUDE_FIELDS] = excludeFields
                 options[constants.METHOD_FIELDS] = methodFields
-                options[constants.CUSTOM_SERIALIZER] = None if customViewParams is None else customViewParams.pop(constants.SERIALIZER_CLASS, None)
+                #options[constants.CUSTOM_SERIALIZER] = None if customViewParams is None else customViewParams.pop(constants.SERIALIZER_CLASS, None)
                 options[constants.REQUIRED_REVERSE_REL_FIELDS] = requiredReverseRelFields
                 cfg.djangoToRestRegistry[cls._meta.label] = options
             return cls

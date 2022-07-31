@@ -2,13 +2,51 @@ from to_rest import constants
 from test_basics import serializers
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.authentication import BasicAuthentication
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from test_basics import filterset
+from to_rest.utils import ViewParams
 
-customViewParamsCustomSerializer = dict()
-customViewParamsCustomSerializer[constants.SERIALIZER_CLASS] = serializers.StudentWithCustomSerializerSerializer
+class CustomSerializer(ViewParams):
 
-customViewParamsCustomAuthAndPermission = dict()
-customViewParamsCustomAuthAndPermission[constants.AUTHENTICATION_CLASSES] = [BasicAuthentication]
-customViewParamsCustomAuthAndPermission[constants.PERMISSION_CLASSES] = [IsAuthenticatedOrReadOnly]
+    def getParams():
+        temp = dict()
+        temp[constants.SERIALIZER_CLASS] = serializers.StudentWithCustomSerializerSerializer
+        return temp
 
-customViewParamsCustomThrottling = dict()
-customViewParamsCustomThrottling[constants.THROTTLE_SCOPE] = "studentCustomThrottle"
+class CustomAuthAndPermission(ViewParams):
+
+    def getParams():
+        temp = dict()
+        temp[constants.AUTHENTICATION_CLASSES] = [BasicAuthentication]
+        temp[constants.PERMISSION_CLASSES] = [IsAuthenticatedOrReadOnly]
+        return temp
+
+class CustomThrottling(ViewParams):
+
+    def getParams():
+        temp = dict()
+        temp[constants.THROTTLE_SCOPE] = "studentCustomThrottle"
+        return temp
+
+class CustomFiltering(ViewParams):
+
+    def getParams():
+        temp = dict()
+        temp[constants.FILTER_BACKENDS] = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+        temp[constants.FILTERSET_FIELDS] = ['name', 'year', 'discipline']
+        temp[constants.SEARCH_FIELDS] = ['name']
+        temp[constants.ORDERING_FIELDS] = ['discipline', 'year']
+        temp[constants.ORDERING] = ['year']
+        return temp
+
+
+class CustomFiltering1(ViewParams):
+
+    def getParams():
+        temp = dict()
+        temp[constants.FILTER_BACKENDS] = [DjangoFilterBackend]
+        temp[constants.FILTERSET_FIELDS] = ['name']
+        temp[constants.FILTERSET_CLASS] = filterset.StudentWithFilterSetClassVSFilterSetFieldFilter
+        
+        return temp
