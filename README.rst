@@ -3,11 +3,11 @@ django-to-rest
 
 .. raw:: html
 
-   <!--![Django To Rest](docs/img/large_logo_black.png)-->
+   <!--![Django To Rest](https://raw.githubusercontent.com/anp-scp/django-to-rest/master/docs/img/large_logo_black.png)-->
 
 .. raw:: html
 
-   <img src="docs/img/large_logo_black.png" width="300" />
+   <img src="https://raw.githubusercontent.com/anp-scp/django-to-rest/master/docs/img/large_logo_black.png" width="300" />
 
 --------------
 
