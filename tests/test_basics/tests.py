@@ -500,3 +500,66 @@ class StudentCustomFilterSetVSFilterFields(APITestCase):
         response = self.client.get(url+"?name=John Doe", format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data),2)
+
+class StudentCustomMethod(APITestCase):
+    """
+    These tests are for ensuring that custom methods work
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test test_basics
+    Note: while running these tests all other test apps that are in default settings.py will also run
+    """
+
+    def setUp(self):
+        s1 = models.StudentWithCustomMethod(name="John Doe", year=2)
+        s1.save()
+        s2 = models.StudentWithCustomMethod(name="Ryan Doe", year=1)
+        s2.save()
+        s3 = models.StudentWithCustomMethod(name="Ryan Shaw", year=2)
+        s3.save()
+
+    def test_case_list_object(self):
+        """
+        Test Case: test_basics-StudentCustomMethod-1
+        Ensure that custom filtering works
+        """
+        url = reverse('test_basics_studentwithcustommethod-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for datum in response.data:
+            self.assertEqual(datum['year'], 2)
+        self.assertEqual(response.data[0]['name'], 'John Doe')
+        self.assertEqual(response.data[1]['name'], 'Ryan Shaw')
+
+class StudentCustomAction(APITestCase):
+    """
+    These tests are for ensuring that custom actions (specifically, methods with deorators) work
+    Command to run these tests:
+    $ pwd
+    /.../django-to-rest/tests
+    $ python3 manage.py test test_basics
+    Note: while running these tests all other test apps that are in default settings.py will also run
+    """
+
+    def setUp(self):
+        s1 = models.StudentWithCustomAction(name="John Doe", year=2)
+        s1.save()
+        s2 = models.StudentWithCustomAction(name="Ryan Doe", year=1)
+        s2.save()
+
+    def test_case_list_object(self):
+        """
+        Test Case: test_basics-StudentCustomAction-1
+        Ensure that custom filtering works
+        """
+        url = reverse('test_basics_studentwithcustomaction-customaction', args=[1])
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['msg'], 'custom action working for John Doe')
+
+        url = reverse('test_basics_studentwithcustomaction-customaction', args=[2])
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['msg'], 'custom action working for Ryan Doe')
+        

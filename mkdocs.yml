@@ -13,6 +13,7 @@ nav:
     - full_guide/adding_permission.md
     - full_guide/adding_throttling.md
     - full_guide/adding_custom_filtering.md
+    - full_guide/adding_methods.md
 
 theme: 
   name: material

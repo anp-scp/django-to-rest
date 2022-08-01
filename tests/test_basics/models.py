@@ -53,3 +53,19 @@ class StudentWithFilterSetClassVSFilterSetField(models.Model):
     
     def __str__(self):
         return "[name={}]".format(self.name)
+
+@restifyModel(customViewParams='CustomListMethod')
+class StudentWithCustomMethod(models.Model):
+    name = models.CharField(max_length=50)
+    year = models.IntegerField()
+    
+    def __str__(self):
+        return "[name={}]".format(self.name)
+
+@restifyModel(customViewParams='CustomAction')
+class StudentWithCustomAction(models.Model):
+    name = models.CharField(max_length=50)
+    year = models.IntegerField()
+    
+    def __str__(self):
+        return "[name={}]".format(self.name)
