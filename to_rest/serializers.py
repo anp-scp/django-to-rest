@@ -5,7 +5,7 @@ from django.db.models.fields.related import OneToOneField, ForeignKey, ManyToMan
 from django.db.models.fields.reverse_related import OneToOneRel, ManyToOneRel, ManyToManyRel
 from to_rest import cfg
 
-def createModelSerializers(model, excludedFields, methodFields, requiredReverseRelFields):
+def createModelSerializers(model, excludedFields, methodFields):
     """
     Method to create model serializers for the models marked for restification.
 
@@ -61,9 +61,6 @@ def createModelSerializers(model, excludedFields, methodFields, requiredReverseR
         func.__name__ = "get_" + fieldName
         return func
 
-    def addToExtraKwargs(map,fieldName):
-        if requiredReverseRelFields is not None and fieldName not in requiredReverseRelFields:
-            map[fieldName] = {'required': False}
     
     fields = []
     relationalFields = []
@@ -71,7 +68,7 @@ def createModelSerializers(model, excludedFields, methodFields, requiredReverseR
         if excludedFields is not None and field.name in excludedFields:
             continue
         elif field.is_relation:
-            if cfg.djangoToRestRegistry[field.related_model._meta.label] is not None:
+            if cfg.djangoToRestRegistry.get(field.related_model._meta.label, False):
                 relationalFields.append(field)
         else:
             fields.append(field.name)
@@ -85,13 +82,14 @@ def createModelSerializers(model, excludedFields, methodFields, requiredReverseR
     serializerAttribute = {}
     reqFields = dict()
     defaultActions = []
+    oneToOneRelations = []
     for relationalField in relationalFields:
         if isinstance(relationalField, OneToOneField):
             fields.append(relationalField.name)
         elif isinstance(relationalField, OneToOneRel):
             temp = relationalField.related_name if relationalField.related_name is not None else relationalField.name
             fields.append(temp)
-            addToExtraKwargs(reqFields, temp)
+            oneToOneRelations.append(temp)
         elif isinstance(relationalField, ForeignKey):
             fields.append(relationalField.name)
         elif isinstance(relationalField, ManyToOneRel):
@@ -119,6 +117,8 @@ def createModelSerializers(model, excludedFields, methodFields, requiredReverseR
     metaAttributes["extra_kwargs"] = reqFields
     meta = type("Meta", (object,), metaAttributes)
     serializerAttribute["Meta"] = meta #create meta class for the serializer class
+    for each in oneToOneRelations:
+        serializerAttribute[each] = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
 
     if methodFields is not None:
         for methodField in methodFields:

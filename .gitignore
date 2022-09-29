@@ -4,3 +4,4 @@
 /virtualenv
 /tests/**/__pycache__
 /site/
+/build

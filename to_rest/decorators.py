@@ -6,7 +6,7 @@ from rest_framework.serializers import BaseSerializer
 import logging
 from collections import defaultdict
 
-def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, methodFields=None, requiredReverseRelFields=None):
+def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, methodFields=None):
     """
     A decorator function to include the models in the registry so that the decorated models
     are marked for restification. By restification we mean to expose REST api(s) for that 
@@ -25,10 +25,6 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
         methodFields (list): The list of methods as read only fields. This can be used to include the
         model's methods output as field. This include only those field that don't take any parameter.
 
-        requiredReverseRelFields (list): Whenever a one to one relation is created,
-        a reverse field is also included in the serializer for the model in the other side of relationship.
-        To make those a required field in post and put. Use this parameter.
-
     Returns:
         decorated class or function object
     """
@@ -38,8 +34,6 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("excludeFields", "list", type(excludeFields)))
     if methodFields is not None and not isinstance(methodFields, list):
         raise TypeError(constants.TYPE_ERROR_MESSAGE.format("methodFields", "list", type(methodFields)))
-    if requiredReverseRelFields is not None and not isinstance(requiredReverseRelFields, list):
-        raise TypeError(constants.TYPE_ERROR_MESSAGE.format("requiredReverseRelFields", "list", type(requiredReverseRelFields)))
     def decorator_restifyModel(cls):
         """
         The decorator function that does the registry/marking.
@@ -57,7 +51,6 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
                 options[constants.EXCLUDE_FIELDS] = excludeFields
                 options[constants.METHOD_FIELDS] = methodFields
                 #options[constants.CUSTOM_SERIALIZER] = None if customViewParams is None else customViewParams.pop(constants.SERIALIZER_CLASS, None)
-                options[constants.REQUIRED_REVERSE_REL_FIELDS] = requiredReverseRelFields
                 cfg.djangoToRestRegistry[cls._meta.label] = options
             return cls
     

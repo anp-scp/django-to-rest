@@ -47,13 +47,12 @@ def restifyApp(relativeUri):
         customViewParams = cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_VIEW_PARAMS,None)
         excludedFields = cfg.djangoToRestRegistry[entity].get(constants.EXCLUDE_FIELDS, None)
         methodFields = cfg.djangoToRestRegistry[entity].get(constants.METHOD_FIELDS, None)
-        requiredReverseRelFields = cfg.djangoToRestRegistry[entity].get(constants.REQUIRED_REVERSE_REL_FIELDS,None)
         modelSerializer = None
         if customSerializer is None:
-            modelSerializer = restifySerializer.createModelSerializers(model, excludedFields, methodFields, requiredReverseRelFields)
+            modelSerializer = restifySerializer.createModelSerializers(model, excludedFields, methodFields)
             cfg.djangoToRestRegistry[entity][constants.DEFAULT_SERIALIZER] = modelSerializer
         else:
-            tempSerializer = restifySerializer.createModelSerializers(model, excludedFields, methodFields, requiredReverseRelFields)
+            tempSerializer = restifySerializer.createModelSerializers(model, excludedFields, methodFields)
             cfg.djangoToRestRegistry[entity][constants.DEFAULT_SERIALIZER] = tempSerializer
             modelSerializer = customSerializer
         viewSetAttributes =  views.getObjectViewSetAttributes(model, modelSerializer, customViewParams)
