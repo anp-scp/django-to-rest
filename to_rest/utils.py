@@ -32,7 +32,7 @@ def restifyApp(relativeUri):
     """
 
     for entity in cfg.djangoToRestRegistry:
-        if cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_VIEW_PARAMS,False):
+        if cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_VIEW_PARAMS,False) and isinstance(cfg.djangoToRestRegistry[entity].get(constants.CUSTOM_VIEW_PARAMS,False), str):
             temp = cfg.djangoToRestRegistry[entity][constants.CUSTOM_VIEW_PARAMS]
             appName = apps.get_model(entity)._meta.app_label
             module = importlib.import_module(appName + '.' + 'view_params')

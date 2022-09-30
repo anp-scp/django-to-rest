@@ -15,8 +15,7 @@ def restifyModel(_cls=None, *, customViewParams=None, excludeFields=None, method
     Parameters:
         _cls (object): The class that needs to be decorated.
 
-        customViewParams (dict): To provide customize methods for view set. For example, for
-        list, create, retreive, update, partial_update, delete, get_object and get_queryset.
+        customViewParams (str): To provide class names in view_params.py for custom view parameters.
 
         excludeFields (list): The fields that needs to be excluded from the JSON object. provide
         fields will not be included in the serializer. If customSerializer is provided then this

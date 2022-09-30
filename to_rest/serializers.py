@@ -80,7 +80,6 @@ def createModelSerializers(model, excludedFields, methodFields):
     
     #create attributes for serializer class
     serializerAttribute = {}
-    reqFields = dict()
     defaultActions = []
     oneToOneRelations = []
     for relationalField in relationalFields:
@@ -114,7 +113,6 @@ def createModelSerializers(model, excludedFields, methodFields):
             #corresponding action for the one to many and many to many fields
     cfg.djangoToRestRegistry[model._meta.label][constants.DEFAULT_ACTIONS] = defaultActions
     metaAttributes["fields"] = fields
-    metaAttributes["extra_kwargs"] = reqFields
     meta = type("Meta", (object,), metaAttributes)
     serializerAttribute["Meta"] = meta #create meta class for the serializer class
     for each in oneToOneRelations:
