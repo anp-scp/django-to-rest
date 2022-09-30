@@ -41,7 +41,6 @@ For example:
     * `customViewParams (str)`: This accepts the name of a `ViewParams` class. The `ViewParams` class needs to override the class method `getParams()` to provide customized methods and attributes for view set. For example, custom serializer, list method, create method, retreive method, update method, partial_update method, delete method, get_object method, get_queryset, etc. The `getParams()` method must return a disctionary. 
     * `excludeFields (list)`: The fields that needs to be excluded from the JSON object. Provided fields will not be included in the serializer. If customSerializer is provided then this parameter will be ignored.
     * `methodFields (list)`: The list of methods as read only fields. This can be used to include the model's methods output as field. This include only those field that don't take any parameter.
-    * `requiredReverseRelFields (list)`: Whenever a one to one relation is created, a reverse field is also included in the serializer for the model in the other side of relationship. To make those a required field in post and put. Provide the list of fields.
 
 An example of passing custom serializer is given below:
 
