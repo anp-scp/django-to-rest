@@ -67,7 +67,7 @@ def restifyApp(relativeUri):
             for defaultAction in defaultActions:
                 if defaultAction[0] == "oneToManyActionFactory":
                     serializer = None
-                    customSerializer = cfg.djangoToRestRegistry[defaultAction[2]][constants.CUSTOM_SERIALIZER]
+                    customSerializer = cfg.djangoToRestRegistry[defaultAction[2]].get(constants.CUSTOM_SERIALIZER, None)
                     defaultSerializer = cfg.djangoToRestRegistry[defaultAction[2]][constants.DEFAULT_SERIALIZER]
                     if customSerializer is None:
                         serializer = defaultSerializer

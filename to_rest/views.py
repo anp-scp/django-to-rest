@@ -31,12 +31,13 @@ def isDefaultSerializer(serializer):
     return serializer.__name__.startswith(constants.PROJECT_NAME_PREFIX)
 
 
-def getTempViewSet(childModel, childSerializer, viewParams):
+def getTempViewSet(queryset, childModel, childSerializer, viewParams):
     """
     Function to create temporary views for filtering and permission purposes for actions as
     actions do not accept additional filterset_class or filterset_fields.
 
     Parameters:
+        queryset: the quesryset for the view
         childModel (django.db.models.Model) : the model object
         childSerializer (rest_framework.serializers.BaseSerializer) : the serializer
         viewParams (dict) : a dictionary for the view attributes
@@ -48,6 +49,7 @@ def getTempViewSet(childModel, childSerializer, viewParams):
     defaultFilterBackends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     #set defaults
     attributes = dict()
+    attributes[constants.QUERYSET] = queryset
     attributes[constants.SERIALIZER_CLASS] = childSerializer
     #attributes[constants.FILTER_BACKENDS] = defaultFilterBackends if REST_FRAMEWORK_SETTINGS is None else REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, defaultFilterBackends)
     if REST_FRAMEWORK_SETTINGS is None or REST_FRAMEWORK_SETTINGS.get(constants.DEFAULT_FILTER_BACKENDS, None) is None:
@@ -99,27 +101,12 @@ def oneToManyActionFactory(parentModel,childSerializer, field, relatedName):
             childCustomViewParams = cfg.djangoToRestRegistry[childModel._meta.label][constants.CUSTOM_VIEW_PARAMS]    
 
 
-    def funcRelatedList(self,request,pk=None):
+    def funcRelatedList(self,request,pk=None, *args, **kwargs):
         parentObject = parentModel.objects.get(pk=pk)
         childObjects = eval("parentObject.{}.all()".format(relatedName))
-        tempView = getTempViewSet(childModel, childSerializer, childCustomViewParams)
-        tempViewObj = tempView()
-        try:
-            for backend in list(getattr(tempViewObj, constants.FILTER_BACKENDS)):
-                childObjects = backend().filter_queryset(self.request, childObjects, tempViewObj)
-        except Exception as e:
-            traceback.print_exc()
-        if len(childObjects) == 0:
-            headers = {}
-            headers[constants.CONTENT_MESSAGE] = constants.NO_OBJECT_EXISTS.format("related "+childModel.__name__)
-            return Response(status=status.HTTP_204_NO_CONTENT, headers=headers)
-        else:
-            page = self.paginate_queryset(childObjects)
-            if page is not None:
-                serializer =  childSerializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
-            serializer = childSerializer(childObjects, many=True)
-            return Response(serializer.data)
+        tempViewSet = getTempViewSet(childObjects, childModel, childSerializer, childCustomViewParams)
+        tempView = tempViewSet.as_view({'get': 'list'})
+        return tempView(request._request,*args,**kwargs)
 
     funcRelatedList.__name__ = constants.ONE_TO_MANY_LIST_ACTION + relatedName
     funcRelatedList = action(detail=True, methods=['get'], url_path=relatedName, url_name=parentModelName.lower() + "-" + relatedName +"-list")(funcRelatedList)
@@ -176,7 +163,7 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             parentObject = parentModel.objects.get(pk=pk)
             filter_param = field.field.m2m_reverse_field_name() + "_" + field.field.m2m_reverse_target_field_name() if isinstance(field,ManyToManyRel) else field.m2m_field_name() + "_" + field.m2m_target_field_name()
             throughObjects = eval("parentObject.{}.through.objects.filter({}=pk)".format(relatedName, filter_param))
-            tempView = getTempViewSet(throughModel, throughSerializer, viewParams)
+            tempView = getTempViewSet(throughObjects, throughModel, throughSerializer, viewParams)
             tempViewObj = tempView()
             try:
                 for backend in list(getattr(tempViewObj, constants.FILTER_BACKENDS)):
