@@ -270,3 +270,117 @@ Now, if a user has all permissions for `Question1` and not for `Choice1` then th
     {
         "detail": "You do not have permission to perform this action."
     }
+
+Many-to-many relationships
+------------------------
+In case of many-to-many relationships, ``through`` objects for the related objects are returned from the nested url instead of the related objects as ``through`` objects have better information about the relationship.
+
+Nested url for many-to-many relationships support following operations:
+
+* list (GET)
+* create (POST)
+* retrieve (GET)
+* update (PUT)
+* partial_update (PATCH)
+* delete (DELETE)
+
+All the other view set attributes like `permission_classes`, `filter_backends`, ... applies as provided to the decorator in models.py for the through model.
+
+### Example
+
+Consider the below model:
+
+```py title="models.py" linenums="1"
+from django.db import models
+from to_rest.decorators import restifyModel
+
+# Create your models here.
+@restifyModel
+class Student(models.Model):
+    name = models.CharField(max_length=75)
+    friends = models.ManyToManyField("self")
+
+    def __str__(self):
+        return self.name
+@restifyModel
+class Course(models.Model):
+    name = models.CharField(max_length=75)
+    student = models.ManyToManyField(Student)
+
+    def __str__(self):
+        return self.name
+```
+
+Consider the following as available data:
+
+    $ http -b --unsorted GET http://127.0.0.1:8000/rest/v1/edu/student/
+    [
+        {
+            "id": 1,
+            "name": "John Doe",
+            "course_set": "/rest/v1/edu/student/1/course_set/",
+            "friends": "/rest/v1/edu/student/1/friends/"
+        },
+        {
+            "id": 2,
+            "name": "Eva Doe",
+            "course_set": "/rest/v1/edu/student/2/course_set/",
+            "friends": "/rest/v1/edu/student/2/friends/"
+        },
+        {
+            "id": 3,
+            "name": "Alice Doe",
+            "course_set": "/rest/v1/edu/student/3/course_set/",
+            "friends": "/rest/v1/edu/student/3/friends/"
+        }
+    ]
+
+    $ http -b --unsorted GET http://127.0.0.1:8000/rest/v1/edu/course/
+    [
+        {
+            "id": 1,
+            "name": "CS601",
+            "student": "/rest/v1/edu/course/1/student/"
+        },
+        {
+            "id": 2,
+            "name": "CS602",
+            "student": "/rest/v1/edu/course/2/student/"
+        },
+        {
+            "id": 3,
+            "name": "CS603",
+            "student": "/rest/v1/edu/course/3/student/"
+        }
+    ]
+
+Now, to relate `John Doe` with `CS601` and `CS602`, following can be done:
+
+    $ http -b --unsorted POST http://127.0.0.1:8000/rest/v1/edu/student/1/course_set/ course=1
+    {
+        "id": 1,
+        "course": 1,
+        "student": 1
+    }
+    $ http -b --unsorted POST http://127.0.0.1:8000/rest/v1/edu/student/1/course_set/ course=2
+    {
+        "id": 2,
+        "course": 2,
+        "student": 1
+    }
+
+In the above example, data for `through` objects are provided. And the relationship between `John Doe` and related courses can be listed as follows:
+
+    $ http -b --unsorted GET http://127.0.0.1:8000/rest/v1/edu/student/1/course_set/
+    [
+        {
+            "id": 1,
+            "course": 1,
+            "student": 1
+        },
+        {
+            "id": 2,
+            "course": 2,
+            "student": 1
+        }
+    ]
