@@ -384,3 +384,94 @@ In the above example, data for `through` objects are provided. And the relations
             "student": 1
         }
     ]
+
+Customize nested URL behaviour
+------------------------------
+
+To customize the default behaviour of the nested url(s), custom definitions for following method (decorated with the decorator `rest_framework.decorators.action`) needs to be passed as custom view parameters:
+
+* For Many-to-one: 
+    - Name of function: `to_rest.constants.ONE_TO_MANY_LIST_ACTION + relatedName`
+    - signature: `(self,request,pk=None, *args, **kwargs)`
+* For Many-to-many list view: 
+    - Name of function: `to_rest.constants.MANY_TO_MANY_LIST_ACTION + relatedName`
+    - signature: `(self,request,pk=None, *args,**kwargs)`
+* For Many-to-one detail view: 
+    - Name of function: `to_rest.constants.MANY_TO_MANY_DETAIL_ACTION + relatedName`
+    - signature: `self,request,childPk,pk=None,*args,**kwargs`
+    - NOTE: Here `pk` for primary key of the parent object and `childPk` is primar key of the related or nested object
+
+### Example
+
+To customize the behaviour for the example shown for Many-to-many, following can be done:
+
+=== "view_params.py"
+
+    ``` py linenums="1"
+    from to_rest import constants
+    from to_rest.utils import ViewParams
+    from rest_framework.response import Response
+    from rest_framework.decorators import action
+    from to_rest import constants
+
+    class CustomAction(ViewParams):
+
+        def getParams():
+            def customaction(self,request,pk=None, *args,**kwargs):
+                if self.request.method == "GET":
+                    return Response({'msg':"Custom method working (GET)"})
+                elif self.request.method == 'POST':
+                    return Response({'msg':"custom method working (POST)"})
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+            customaction.__name__ = constants.MANY_TO_MANY_LIST_ACTION + 'course_set'
+            customaction = action(detail=True, methods=['get', 'post'], url_path='course_set', url_name="student-course_set-list")(customaction)
+            temp = dict()
+            temp[constants.MANY_TO_MANY_LIST_ACTION + 'course_set'] = customaction
+            return temp
+    ```
+
+=== "models.py"
+
+    ```py linenums="1"
+    from django.db import models
+    from to_rest.decorators import restifyModel
+
+    # Create your models here.
+    @restifyModel(customViewParams='CustomAction')
+    class Student(models.Model):
+        name = models.CharField(max_length=75)
+        friends = models.ManyToManyField("self")
+
+        def __str__(self):
+            return self.name
+    @restifyModel
+    class Course(models.Model):
+        name = models.CharField(max_length=75)
+        student = models.ManyToManyField(Student)
+
+        def __str__(self):
+            return self.name
+    ```
+
+!!! Note
+
+    * In the above example, `relatedName` is `course_set`.
+    * While decorating the method (here at line 18):
+        - `url_path` must be in the form (all lower case): 
+            - `<relatedName>` for list view
+            - `<relatedName>/(?P<childPk>.+)` for detail view
+        - `url_name` must be in the form (all lower case): `<parent model name>-<relatedName>-<view type>`
+        - View type can be `list` for list view or `detail` for detail view
+
+After making the avobe change, url(s) will work as follows:
+
+    $ http -b GET http://127.0.0.1:8000/rest/v1/edu/student/1/course_set/
+    {
+        "msg": "Custom method working (GET)"
+    }
+
+    $ http -b POST http://127.0.0.1:8000/rest/v1/edu/student/1/course_set/
+    {
+        "msg": "custom method working (POST)"
+    }
