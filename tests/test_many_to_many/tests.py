@@ -72,18 +72,23 @@ class TestCaseManyToManyRelation(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         s1_id = response.data[0]['id']
         s1_nestedUrl = response.data[0]['course_set']
+        s1_nestedUrl += "" if s1_nestedUrl.endswith('/') else "/"
         s2_id = response.data[1]['id']
         s2_nestedUrl = response.data[1]['course_set']
+        s2_nestedUrl += "" if s2_nestedUrl.endswith('/') else "/"
         s3_id = response.data[2]['id']
         s3_nestedUrl = response.data[2]['course_set']
+        s3_nestedUrl += "" if s3_nestedUrl.endswith('/') else "/"
 
         url = reverse('test_many_to_many_course-list')
         response = self.client.get(url, response='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         c1_id = response.data[0]['id']
         c1_nestedUrl = response.data[0]['student']
+        c1_nestedUrl += "" if c1_nestedUrl.endswith('/') else "/"
         c2_id = response.data[1]['id']
         c2_nestedUrl = response.data[1]['student']
+        c2_nestedUrl += "" if c2_nestedUrl.endswith('/') else "/"
 
         url = host + s1_nestedUrl
         response = self.client.post(url, data={'course': c1_id}, response='json')

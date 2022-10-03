@@ -58,7 +58,8 @@ def restifyApp(relativeUri):
         viewSetAttributes =  views.getObjectViewSetAttributes(model, modelSerializer, customViewParams)
         cfg.djangoToRestRegistry[entity][constants.VIEW_SET_ATTRIBUTES] = viewSetAttributes
     
-    router = routers.DefaultRouter()
+    router1 = routers.DefaultRouter(trailing_slash=True)
+    router2 = routers.DefaultRouter(trailing_slash=False)
     for entity in cfg.djangoToRestRegistry:
         model = apps.get_model(entity)
         viewSetAttributes = cfg.djangoToRestRegistry[entity][constants.VIEW_SET_ATTRIBUTES]
@@ -85,6 +86,7 @@ def restifyApp(relativeUri):
         
         viewSet = type(constants.PROJECT_NAME_PREFIX + entity.replace('.','_') + "ViewSet", (ModelViewSet,), viewSetAttributes)
         cfg.djangoToRestRegistry[entity][constants.DEFAULT_VIEW_SET] = viewSet
-        router.register(prefix=r'{}/{}'.format(relativeUri, model._meta.label.lower().replace('.','/')), viewset=viewSet, basename=model._meta.label.lower().replace('.','_'))
+        router1.register(prefix=r'{}/{}'.format(relativeUri, model._meta.label.lower().replace('.','/')), viewset=viewSet, basename=model._meta.label.lower().replace('.','_'))
+        router2.register(prefix=r'{}/{}'.format(relativeUri, model._meta.label.lower().replace('.','/')), viewset=viewSet, basename=model._meta.label.lower().replace('.','_'))
         
-    return router.urls
+    return router1.urls + router2.urls
