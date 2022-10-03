@@ -227,7 +227,16 @@ def manyToManyActionFactory(parentModel, field, relatedName):
 
     def funcRelatedDetail(self,request,childPk,pk=None,*args,**kwargs):
         #kind of detail view
-        if self.request.method == "PUT":
+        if self.request.method == 'GET':
+            parentObject = get_object_or_404(parentModel, pk=pk) #just to raise 404
+            throughObject = get_object_or_404(throughModel, pk=childPk)
+            def get_object(self):
+                return throughObject
+            throughObjects = throughModel.objects.all()
+            tempViewSet = getTempViewSet(throughObjects, throughModel, throughSerializer, viewParams, {'get_object': get_object})
+            tempView = tempViewSet.as_view({'get': 'retrieve'})
+            return tempView(request._request, *args, **kwargs)
+        elif self.request.method == "PUT":
             #For, updating a relationship, through object will be used. For, that reason, the primary
             #key of the through object will be used as path parameter in the nested url. To get the primary
             #key of the through object filter can be used in with the url of list view (GET)
@@ -301,7 +310,7 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
     funcRelatedDetail.__name__ = constants.MANY_TO_MANY_DETAIL_ACTION + relatedName
-    funcRelatedDetail = action(detail=True, methods=['put','patch','delete'], url_path=relatedName + "/(?P<childPk>.+)", url_name=parentModelName.lower() + "-" + relatedName +"-detail")(funcRelatedDetail)
+    funcRelatedDetail = action(detail=True, methods=['get','put','patch','delete'], url_path=relatedName + "/(?P<childPk>.+)", url_name=parentModelName.lower() + "-" + relatedName +"-detail")(funcRelatedDetail)
     
     return (funcRelatedList, funcRelatedDetail)
     

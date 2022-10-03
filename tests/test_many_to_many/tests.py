@@ -90,6 +90,11 @@ class TestCaseManyToManyRelation(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         rel1_id = response.data['id']
 
+        url = host + s1_nestedUrl + str(rel1_id) + "/"
+        response = self.client.get(url, response='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['student'], s1_id)
+
         url = host + c1_nestedUrl
         response = self.client.post(url, data={'student': s2_id}, response='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
