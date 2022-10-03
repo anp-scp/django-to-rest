@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'test_many_to_many',
     'test_many_to_one',
     'test_one_to_one',
     'test_basics',
