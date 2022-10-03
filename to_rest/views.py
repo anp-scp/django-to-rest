@@ -204,7 +204,7 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             #To create new relation ship, through objects would be used as it contains prmary key
             #of both sides of the relationship
             parentObject = get_object_or_404(parentModel, pk=pk) #just to raise 404
-            providedData = request.data
+            providedData = request.data.copy()
             parentObjectField = field.field.m2m_reverse_field_name()  if isinstance(field,ManyToManyRel) else field.m2m_field_name()
             providedData[parentObjectField] = pk
             request._full_data = providedData
@@ -234,7 +234,7 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             parentObject = get_object_or_404(parentModel, pk=pk) #just to raise 404
             parentObjectField = field.field.m2m_reverse_field_name()  if isinstance(field,ManyToManyRel) else field.m2m_field_name()
             throughObject = get_object_or_404(throughModel, pk=childPk)
-            providedData = request.data
+            providedData = request.data.copy()
             providedData[parentObjectField] = pk
             def get_object(self):
                 return throughObject
@@ -262,7 +262,7 @@ def manyToManyActionFactory(parentModel, field, relatedName):
             parentObject = get_object_or_404(parentModel, pk=pk) #just to raise 404
             parentObjectField = field.field.m2m_reverse_field_name()  if isinstance(field,ManyToManyRel) else field.m2m_field_name()
             throughObject = get_object_or_404(throughModel, pk=childPk)
-            providedData = request.data
+            providedData = request.data.copy()
             providedData[parentObjectField] = pk
             def get_object(self):
                 return throughObject
