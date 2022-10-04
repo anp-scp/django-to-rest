@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://anp-scp.github.io/django-to-rest/full_guide/marking_model_for_REST/">
+        <link rel="canonical" href="https://anp-scp.github.io/django-to-rest/full_guide/adding_custom_filtering/">
       
       <link rel="icon" href="../../img/small_logo_grey.png">
       <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.3">
     
     
       
-        <title>Marking models to create REST APIs - Django To Rest Docs</title>
+        <title>Adding custom Filtering - Django To Rest Docs</title>
       
     
     
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Marking models to create REST APIs
+              Adding custom Filtering
             
           </span>
         </div>
@@ -229,7 +229,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="./" class="md-tabs__link md-tabs__link--active">
+      <a href="../marking_model_for_REST/" class="md-tabs__link md-tabs__link--active">
         Full Guide
       </a>
     </li>
@@ -366,19 +366,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../marking_model_for_REST/" class="md-nav__link">
         Marking models to create REST APIs
       </a>
-      
     </li>
   
 
@@ -444,11 +436,19 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../adding_custom_filtering/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Adding custom Filtering
       </a>
+      
     </li>
   
 
@@ -580,85 +580,52 @@
                 
                   
 
-  <a href="https://github.com/anp-scp/django-to-rest/edit/master/docs/full_guide/marking_model_for_REST.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/anp-scp/django-to-rest/edit/master/docs/full_guide/adding_custom_filtering.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-  <h1>Marking models to create REST APIs</h1>
+  <h1>Adding custom Filtering</h1>
 
-<p>To create REST APIs for a model, first we need to mark the model. And to mark the model, use the decorator <code>to_rest.decorators.restifyModel</code>. The decorator can be used in the following two ways:</p>
-<ol>
-<li>
-<p><strong>Without Parameters</strong>: When used without parameters, all the defaults would be applied.
-For example:</p>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">/.../quickstart/mysite/polls/models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span>
-<span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span>
-<span class="normal"><a href="#__codelineno-0-23">23</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kn">from</span> <span class="nn">to_rest.decorators</span> <span class="kn">import</span> <span class="n">restifyModel</span> <span class="c1"># (1)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># Create your models here.</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="nd">@restifyModel</span> <span class="c1"># (2)</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="k">class</span> <span class="nc">Question</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="n">question_text</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="n">pub_date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="s1">&#39;date published&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">question_text</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14"></a>
-<a id="__codelineno-0-15" name="__codelineno-0-15"></a>
-<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="nd">@restifyModel</span> <span class="c1"># (3)</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="k">class</span> <span class="nc">Choice</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="n">question</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Question</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">,</span><span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;choices&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="n">choice_text</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a>    <span class="n">votes</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21"></a>
-<a id="__codelineno-0-22" name="__codelineno-0-22"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">choice_text</span>
-</code></pre></div></td></tr></table></div>
-<ol>
-<li>Import the decorator from the library</li>
-<li>Note the way decorator is used</li>
-<li>Note the way decorator is used</li>
-</ol>
-</li>
-<li>
-<p><strong>With Parameters</strong>: The decorator accepts the following parameters</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is advised to go through point 2 of <a href="../marking_model_for_REST/">Marking models to create REST APIs</a> and <a href="../adding_custom_serializer/">Adding Custom Serializer</a> and have an understanding of passing custom view attributes.</p>
+</div>
+<p>For filtering, following keys can be used in the dictionary that would be returned from the <code>getParams()</code> method of a <code>ViewParams</code> class:</p>
 <ul>
-<li><code>customViewParams (str)</code>: This accepts the name of a <code>ViewParams</code> class. The <code>ViewParams</code> class needs to override the class method <code>getParams()</code> to provide customized methods and attributes for view set. For example, custom serializer, list method, create method, retreive method, update method, partial_update method, delete method, get_object method, get_queryset, etc. The <code>getParams()</code> method must return a dictionary. </li>
-<li><code>excludeFields (list)</code>: The fields that needs to be excluded from the JSON object. Provided fields will not be included in the serializer. If customSerializer is provided then this parameter will be ignored.</li>
-<li><code>methodFields (list)</code>: The list of methods as read only fields. This can be used to include the model's methods' output as field. This includes only those field that don't take any parameter.</li>
+<li>to_rest.constants.FILTER_BACKENDS: To specify filter backends</li>
+<li>to_rest.constants.FILTERSET_FIELDS: To specify filterset fields</li>
+<li>to_rest.constants.SEARCH_FIELDS: To specify search fields</li>
+<li>to_rest.constants.ORDERING_FIELDS: To specify ordering fields</li>
+<li>to_rest.constants.ORDERING: To specify default ordering</li>
+<li>to_rest.constants.FILTERSET_CLASS: To specify filterset class</li>
 </ul>
-</li>
-</ol>
-<p>An example of passing custom serializer is given below:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">serializers.py</label><label for="__tabbed_1_2">view_params.py</label><label for="__tabbed_1_3">models.py</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If both <code>to_rest.constants.FILTERSET_CLASS</code> and <code>to_rest.constants.FILTERSET_FIELDS</code> are used then <code>to_rest.constants.FILTERSET_CLASS</code> is given preference and <code>to_rest.constants.FILTERSET_FIELDS</code> is ignored.</p>
+</div>
+<p>For example, let us consider the below model:</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span>
+<span class="normal"><a href="#__codelineno-0-8">8</a></span>
+<span class="normal"><a href="#__codelineno-0-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">class</span> <span class="nc">StudentWithCustomFiltering</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="n">year</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a>    <span class="n">discipline</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>        <span class="k">return</span> <span class="s2">&quot;[name=</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p>For above model, various filtering attributes can be provided via a <code>ViewParams</code> class. For example:</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">view_params.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
@@ -667,23 +634,34 @@ For example:</p>
 <span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
 <span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
 <span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-1-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">test_basics.models</span> <span class="kn">import</span> <span class="n">StudentWithCustomSerializer</span> <span class="c1"># (1)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">class</span> <span class="nc">StudentWithCustomSerializerSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="nb">id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span>
+<span class="normal"><a href="#__codelineno-1-15">15</a></span>
+<span class="normal"><a href="#__codelineno-1-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">to_rest</span> <span class="kn">import</span> <span class="n">constants</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">to_rest.utils</span> <span class="kn">import</span> <span class="n">ViewParams</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">rest_framework.filters</span> <span class="kn">import</span> <span class="n">SearchFilter</span><span class="p">,</span> <span class="n">OrderingFilter</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="kn">from</span> <span class="nn">test_basics</span> <span class="kn">import</span> <span class="n">filterset</span> <span class="c1"># (1)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="kn">from</span> <span class="nn">django_filters.rest_framework</span> <span class="kn">import</span> <span class="n">DjangoFilterBackend</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">class</span> <span class="nc">CustomFiltering</span><span class="p">(</span><span class="n">ViewParams</span><span class="p">):</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8"></a>
-<a id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validated_data</span><span class="p">):</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10"></a>        <span class="k">return</span> <span class="n">StudentWithCustomSerializer</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">**</span><span class="n">validated_data</span><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">():</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10"></a>        <span class="n">temp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11"></a>        <span class="n">temp</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">FILTER_BACKENDS</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">DjangoFilterBackend</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">,</span> <span class="n">OrderingFilter</span><span class="p">]</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12"></a>        <span class="n">temp</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">FILTERSET_FIELDS</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;discipline&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13"></a>        <span class="n">temp</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">SEARCH_FIELDS</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14"></a>        <span class="n">temp</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">ORDERING_FIELDS</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;discipline&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15"></a>        <span class="n">temp</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">ORDERING</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16"></a>        <span class="k">return</span> <span class="n">temp</span>
 </code></pre></div></td></tr></table></div>
 <ol>
-<li>Here, test_basics is the directory of the app</li>
+<li>Here, test_basics is the directory of app</li>
 </ol>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<p>Ensure that the name of the class is passed to the decorator <code>restifyModel()</code> in <code>models.py</code>. For example:</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
 <span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
@@ -692,48 +670,19 @@ For example:</p>
 <span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
 <span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
 <span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-2-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">to_rest</span> <span class="kn">import</span> <span class="n">constants</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">test_basics</span> <span class="kn">import</span> <span class="n">serializers</span> <span class="c1"># (1)</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">to_rest.utils</span> <span class="kn">import</span> <span class="n">ViewParams</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="k">class</span> <span class="nc">CustomSerializer</span><span class="p">(</span><span class="n">ViewParams</span><span class="p">):</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">():</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8"></a>        <span class="n">temp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9"></a>        <span class="n">temp</span><span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">SERIALIZER_CLASS</span><span class="p">]</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">StudentWithCustomSerializerSerializer</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="k">return</span> <span class="n">temp</span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">to_rest.decorators</span> <span class="kn">import</span> <span class="n">restifyModel</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="nd">@restifyModel</span><span class="p">(</span><span class="n">customViewParams</span><span class="o">=</span><span class="s1">&#39;CustomFiltering&#39;</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="k">class</span> <span class="nc">StudentWithCustomFiltering</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">year</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="n">discipline</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11"></a>        <span class="k">return</span> <span class="s2">&quot;[name=</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<ol>
-<li>Here, test_basics is the directory of the app</li>
-</ol>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
-<span class="normal"><a href="#__codelineno-3-2">2</a></span>
-<span class="normal"><a href="#__codelineno-3-3">3</a></span>
-<span class="normal"><a href="#__codelineno-3-4">4</a></span>
-<span class="normal"><a href="#__codelineno-3-5">5</a></span>
-<span class="normal"><a href="#__codelineno-3-6">6</a></span>
-<span class="normal"><a href="#__codelineno-3-7">7</a></span>
-<span class="normal"><a href="#__codelineno-3-8">8</a></span>
-<span class="normal"><a href="#__codelineno-3-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">to_rest.decorators</span> <span class="kn">import</span> <span class="n">restifyModel</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="nd">@restifyModel</span><span class="p">(</span><span class="n">customViewParams</span><span class="o">=</span><span class="s1">&#39;CustomSerializer&#39;</span><span class="p">)</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">class</span> <span class="nc">StudentWithCustomSerializer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9"></a>        <span class="k">return</span> <span class="s2">&quot;[name=</span><span class="si">{}</span><span class="s2">, year=</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-</div>
-</div>
-</div>
-<p>In the above example, a custom serializer has been created in <code>serializers.py</code>. A <code>ViewParams</code> class, <code>CustomSerializer</code> is created in <code>view_params.py</code> to provide the custom serializer. And the name of the <code>ViewParams</code> class is provided in decorator at line 4 in <code>models.py</code>. </p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>All <code>ViewParams</code> classes must be in the module <code>view_params</code> in the directory of the app. That means, in the same location where <code>models.py</code> is located.  Django-to-rest will get the name of the <code>ViewParams</code> class from the decorator and will search that class in the module <code>view_params.</code> Hence, in the example above, <code>CustomSerializer</code> is created in <code>view_params.py</code>.</p>
-</div>
 
 
 
@@ -759,7 +708,7 @@ For example:</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../../quickstart/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Quickstart Guide" rel="prev">
+        <a href="../adding_throttling/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Adding throttling options" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -768,20 +717,20 @@ For example:</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Quickstart Guide
+              Adding throttling options
             </div>
           </div>
         </a>
       
       
         
-        <a href="../adding_custom_serializer/" class="md-footer__link md-footer__link--next" aria-label="Next: Adding custom Serializer" rel="next">
+        <a href="../adding_methods/" class="md-footer__link md-footer__link--next" aria-label="Next: Adding methods" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Adding custom Serializer
+              Adding methods
             </div>
           </div>
           <div class="md-footer__button md-icon">
