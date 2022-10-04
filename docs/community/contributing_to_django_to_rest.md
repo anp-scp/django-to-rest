@@ -24,7 +24,7 @@ To start developing:
 1. Fist create a fork
 2. Clone your fork
 3. It is recommended to have a virtual environment
-4. Install `django 4.0.5` and `django-rest-framework 3.13.1`
+4. Install `django 4.0.5`, `django-rest-framework 3.13.1` and `django-filter 22.1`
 5. Start you development...
 
 See [GitHub's Fork a Repo Guide](https://docs.github.com/en/get-started/quickstart/fork-a-repo) for more help.
@@ -74,7 +74,7 @@ There are five apps in the `tests` directory for testing different scenarios:
     $ python3 manage.py test test_one_to_one
     ```
 
-Before running any test first install django-to-rest by executing below command at the root directory of the repository (where the setup.py resides):
+Before running any test first install django-to-rest by executing below command at the root directory of the repository (where the setup.py resides). This will also install other packages required (that are mentioned in the `Development` section):
 
     $ python3 -m pip install ./
 
