@@ -1,7 +1,7 @@
 ---
 title: Changelogs
 ---
-Django-to-rest 1.0.0b1.1
+Django-to-rest 1.0.0b2
 ----------------------
 * Fixed readme.rst file
 
