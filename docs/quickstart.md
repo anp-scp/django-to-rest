@@ -16,7 +16,7 @@ virtual environment to isolate your work with other stuffs. Let us create and ac
 
 ### Installation
 
-    pip install django-to-rest
+    python3 -m pip install django-to-rest
 
 ### Creation of a django project and app
 
@@ -58,7 +58,7 @@ class Choice(models.Model):
 
 ```
 ### Activating the app
-Now, add the polls app to `INSTALLED_APPS` in settings.py. Also add `rest_framework` to it as 
+Now, add the polls app to `INSTALLED_APPS` in `settings.py`. Also add `rest_framework` to it as 
 `djang-to-rest` uses `djangorestframework` internally:
 
 ```py title="/.../quickstart/mysite/mysite/settings.py" linenums="1"
@@ -107,7 +107,7 @@ Since, our app and DB is setup, let us create some dummy data to play with them 
 
 Now as we have some data to play with, let us use `django-to-rest` to create our api. To do that,
 we need to mark the models for which the REST apis need to be created. Let us mark our models for
-restification!!! (by restification, we mean to create REST api(s) from models):
+restification!!! (by restification, we mean to create REST api(s) for models):
 
 ```py title="/.../quickstart/mysite/polls/models.py" linenums="1"
 from django.db import models

@@ -7,7 +7,7 @@ Conributions are apprciated. Please get involved and help to make the project be
 Code of Conduct
 ---------------
 
-Check this link for code of conduct: [Code of Conduct](../code_of_conduct.md)
+Check this link for code of conduct: [Code of Conduct](../../code_of_conduct.md)
 
 Issues
 ------
@@ -47,7 +47,7 @@ There are five apps in the `tests` directory for testing different scenarios:
 
 2. `tests/test_basics_defaults`
     - To test generic scenarios with configuration in settings file
-    - For this app there is a dedicated settings file at `test/tests/settings_test_basics_defaults.py`
+    - For this app there is a dedicated settings file at `tests/tests/settings_test_basics_defaults.py`
     - Command to run test: 
     ```
     $ python3 manage.py test test_basics_defaults --settings=tests.settings_test_basics_defaults
@@ -83,7 +83,7 @@ Whenever any change in code is made, uninstall django-to-rest:
     $ python3 -m pip uninstall django-to-rest
 
 And then install again to run the test on the updated code.
-Ensure that the test scripts are will comented so that one can understand about the scenario for which it is tested. Check existing scripts for example.
+Ensure that the test scripts are well commented so that one can understand about the scenario for which it is tested. Check existing scripts for example.
 
 Documentation
 -------------

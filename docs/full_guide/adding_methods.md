@@ -27,7 +27,7 @@ class CustomListMethod(ViewParams):
 
 !!! Note
 
-    The name of this class needs to be passed to the decorator in `models.py`.
+    The name of this class has to be passed to the decorator in `models.py`.
 
 Similarly, any method can be added to the view set.
 

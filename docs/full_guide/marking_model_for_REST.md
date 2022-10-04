@@ -38,9 +38,9 @@ For example:
     3. Note the way decorator is used
 
 2. **With Parameters**: The decorator accepts the following parameters
-    * `customViewParams (str)`: This accepts the name of a `ViewParams` class. The `ViewParams` class needs to override the class method `getParams()` to provide customized methods and attributes for view set. For example, custom serializer, list method, create method, retreive method, update method, partial_update method, delete method, get_object method, get_queryset, etc. The `getParams()` method must return a disctionary. 
+    * `customViewParams (str)`: This accepts the name of a `ViewParams` class. The `ViewParams` class needs to override the class method `getParams()` to provide customized methods and attributes for view set. For example, custom serializer, list method, create method, retreive method, update method, partial_update method, delete method, get_object method, get_queryset, etc. The `getParams()` method must return a dictionary. 
     * `excludeFields (list)`: The fields that needs to be excluded from the JSON object. Provided fields will not be included in the serializer. If customSerializer is provided then this parameter will be ignored.
-    * `methodFields (list)`: The list of methods as read only fields. This can be used to include the model's methods output as field. This include only those field that don't take any parameter.
+    * `methodFields (list)`: The list of methods as read only fields. This can be used to include the model's methods' output as field. This includes only those field that don't take any parameter.
 
 An example of passing custom serializer is given below:
 

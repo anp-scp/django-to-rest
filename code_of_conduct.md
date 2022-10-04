@@ -61,7 +61,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at
-[anupammrg@gmail.com](mailto:anupammrg@gmail.com).
+[djangotorest@gmail.com](mailto:djangotorest@gmail.com).
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the
@@ -131,3 +131,9 @@ For answers to common questions about this code of conduct, see the FAQ at
 [Mozilla CoC]: https://github.com/mozilla/diversity
 [FAQ]: https://www.contributor-covenant.org/faq
 [translations]: https://www.contributor-covenant.org/translations
+
+* * *
+Note on reporting guidelines: 
+
+1. Mention `Django-to-rest` in the subject.
+2. Give suffucient details.

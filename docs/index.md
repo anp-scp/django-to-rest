@@ -8,10 +8,10 @@ hide:
 Django To Rest is small tool that helps to expose REST api(s) for
 django models with minimum effort. Some of the features are:
 
-* Just add a decorator atop of a model and REST api(s) are created. That's the work!!!
+* Just add a decorator at top of a model and REST api(s) are created. That's the work!!!
 * Options like filtering and ordering are avilable by default for model fields
 * Easy customisations via the decorator itself
-* *Summary:* Less time??? Just install the tool and the decorator. Done!!!
+* *Summary:* Less time??? Just install the tool and use the decorator. Done!!!
 
 * * *
 * *Documentation:* [https://anp-scp.github.io/django-to-rest](https://anp-scp.github.io/django-to-rest)
@@ -33,7 +33,7 @@ Django to Rest need following requirements :
 
 django-to-rest is published as a package and can be installed using pip. Install with (consider creating a virtual environment):
 
-    pip install django-to-rest
+    python3 -m pip install django-to-rest
 
 ## **Example**
 
@@ -114,3 +114,7 @@ That's all. Now start the server. And check the dev url `http://127.0.0.1:8000/`
 ## **Quickstart**
 
 The [quick start guide](quickstart.md) is a short tutorial which is the fastest way to get everything setup and get an overview of the tool.
+
+## **Contributing**
+
+Check the [contribution guidelines](community/contributing_to_django_to_rest.md) to know about how to contribute to the project.

@@ -55,7 +55,7 @@ Install with (consider creating a virtual environment):
 
 ::
 
-   pip install django-to-rest
+   python3 -m pip install django-to-rest
 
 **Example**
 -----------
@@ -151,3 +151,8 @@ an overview of the tool.
 .. |PyPI version| image:: https://badge.fury.io/py/django-to-rest.svg
    :target: https://badge.fury.io/py/django-to-rest
 .. |CI Passing| image:: https://github.com/anp-scp/django-to-rest/actions/workflows/release.yml/badge.svg
+
+**Contributing**
+----------------
+
+Check the `contribution guidelines <https://anp-scp.github.io/django-to-rest/community/contributing_to_django_to_rest/>`__ to know about how to contribute to the project.
