@@ -30,6 +30,9 @@ jobs:
           cd tests
           python3 manage.py test test_basics
           python3 manage.py test test_basics_defaults --settings=tests.settings_test_basics_defaults
+          python3 manage.py test test_many_to_many
+          python3 manage.py test test_many_to_one
+          python3 manage.py test test_one_to_one
       -
         name: Build the distribution
         run: |
