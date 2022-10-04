@@ -7,7 +7,7 @@ Conributions are apprciated. Please get involved and help to make the project be
 Code of Conduct
 ---------------
 
-Check this link for code of conduct: [Code of Conduct](../../code_of_conduct.md)
+Check this link for code of conduct: [Code of Conduct](https://github.com/anp-scp/django-to-rest/blob/master/code_of_conduct.md)
 
 Issues
 ------
