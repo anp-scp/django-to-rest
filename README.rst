@@ -1,13 +1,11 @@
 django-to-rest
 --------------
 
-.. raw:: html
+.. image:: https://raw.githubusercontent.com/anp-scp/django-to-rest/master/docs/img/large_logo_black.png
+   :width: 300px
+   :alt: Django-to-rest
+   :align: left
 
-   <!--![Django To Rest](https://raw.githubusercontent.com/anp-scp/django-to-rest/master/docs/img/large_logo_black.png)-->
-
-.. raw:: html
-
-   <img src="https://raw.githubusercontent.com/anp-scp/django-to-rest/master/docs/img/large_logo_black.png" width="300" />
 
 --------------
 
