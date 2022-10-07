@@ -584,8 +584,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pull-requests" class="md-nav__link">
-    Pull Requests
+  <a href="#contribute-and-make-pull-request" class="md-nav__link">
+    Contribute and make pull request
   </a>
   
 </li>
@@ -679,8 +679,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pull-requests" class="md-nav__link">
-    Pull Requests
+  <a href="#contribute-and-make-pull-request" class="md-nav__link">
+    Contribute and make pull request
   </a>
   
 </li>
@@ -707,12 +707,12 @@
 
   <h1>Contributing to django-to-rest</h1>
 
-<p>Conributions are apprciated. Please get involved and help to make the project better. The contributions can be in the form ideas, development, documentations and testing in the form test scripts.  </p>
+<p>Thank you for your interest in contrubiting to this project. Please get involved and help to make the project better. The contributions can be in the form of ideas, development, documentations and testing in the form test scripts.  </p>
 <h2 id="code-of-conduct">Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permanent link">&para;</a></h2>
 <p>Check this link for code of conduct: <a href="https://github.com/anp-scp/django-to-rest/blob/master/code_of_conduct.md">Code of Conduct</a></p>
 <h2 id="issues">Issues<a class="headerlink" href="#issues" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Ensure that you discuss the topic before raising and issue. Check <a href="https://github.com/anp-scp/django-to-rest/discussions">Github discussions page</a> for discussions.</li>
+<li>Ensure that you discuss the topic before raising an issue. Check <a href="https://github.com/anp-scp/django-to-rest/discussions">Github discussions page</a> for discussions.</li>
 <li>Ensure that the issues are properly explained</li>
 <li>Before raising an issue check if similar issue already exists in <a href="https://github.com/anp-scp/django-to-rest/issues">Github issues page</a></li>
 </ul>
@@ -723,7 +723,10 @@
 <li>Clone your fork</li>
 <li>It is recommended to have a virtual environment</li>
 <li>Install <code>django 4.0.5</code>, <code>django-rest-framework 3.13.1</code> and <code>django-filter 22.1</code></li>
-<li>Start you development...</li>
+<li>Create new branch</li>
+<li>Start you development on the new branch...</li>
+<li>To test your changes in a django project install the project from your local machine using the command: <code>python3 -m pip install path-to-project's-directory</code>. For example, if the directory <code>django-to-rest</code> is in <code>~/project/</code> then the command would be <code>python3 -m pip install ~/project/django-to-rest/</code></li>
+<li>And then follow the <a href="../../quickstart/">Quickstart Guide</a> for better understanding. Note that the project needs to be installed from the local machine and not from PyPi.</li>
 </ol>
 <p>See <a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">GitHub's Fork a Repo Guide</a> for more help.</p>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
@@ -793,8 +796,20 @@ Ensure that the test scripts are well commented so that one can understand about
 <div class="highlight"><pre><span></span><code>$ mkdocs serve
 </code></pre></div>
 <p>Check <a href="https://squidfunk.github.io/mkdocs-material/">Material for Mkdocs</a> for more help.</p>
-<h2 id="pull-requests">Pull Requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
-<p>All the contributions have to be made via a pull request. Check below links for more help about pull request:</p>
+<h2 id="contribute-and-make-pull-request">Contribute and make pull request<a class="headerlink" href="#contribute-and-make-pull-request" title="Permanent link">&para;</a></h2>
+<p>All the contributions have to be made via a pull request. After you have cloned the forked repository, follow below steps:</p>
+<ol>
+<li>Go into the project's directory (that is <code>django-to-rest</code>)</li>
+<li>Create a new branch using following command in the command line: <code>git branch new-branch-name</code></li>
+<li>Checkout to the new branch using following command in the command line: <code>git checkout new-branch-name</code></li>
+<li>Make the changes that you want to contribute</li>
+<li>Stage your changes using the following command in command line: <code>git command .</code></li>
+<li>Check the status using the command: <code>git status</code></li>
+<li>Commit your changes using the command: <code>git commit -m "commit message"</code></li>
+<li>Push your changes to the remote branch on GitHub by using the following command: <code>git push -u origin branch_name</code></li>
+<li>Open a pull request directed to our main branch</li>
+</ol>
+<p>For tutorials on pull request check below links:</p>
 <ul>
 <li><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests">Github: About pull request</a></li>
 <li><a href="https://www.w3schools.com/git/git_remote_send_pull_request.asp?remote=github">W3schools: Send Pull Request</a></li>
