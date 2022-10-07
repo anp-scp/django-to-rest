@@ -2,7 +2,7 @@
 title: Contributing to django-to-rest
 ---
 
-Conributions are apprciated. Please get involved and help to make the project better. The contributions can be in the form ideas, development, documentations and testing in the form test scripts.  
+Thank you for your interest in contrubiting to this project. Please get involved and help to make the project better. The contributions can be in the form of ideas, development, documentations and testing in the form test scripts.  
 
 Code of Conduct
 ---------------
@@ -12,7 +12,7 @@ Check this link for code of conduct: [Code of Conduct](https://github.com/anp-sc
 Issues
 ------
 
-* Ensure that you discuss the topic before raising and issue. Check [Github discussions page](https://github.com/anp-scp/django-to-rest/discussions) for discussions.
+* Ensure that you discuss the topic before raising an issue. Check [Github discussions page](https://github.com/anp-scp/django-to-rest/discussions) for discussions.
 * Ensure that the issues are properly explained
 * Before raising an issue check if similar issue already exists in [Github issues page](https://github.com/anp-scp/django-to-rest/issues)
 
@@ -25,7 +25,10 @@ To start developing:
 2. Clone your fork
 3. It is recommended to have a virtual environment
 4. Install `django 4.0.5`, `django-rest-framework 3.13.1` and `django-filter 22.1`
-5. Start you development...
+6. Create new branch
+5. Start you development on the new branch...
+6. To test your changes in a django project install the project from your local machine using the command: `python3 -m pip install path-to-project's-directory`. For example, if the directory `django-to-rest` is in `~/project/` then the command would be `python3 -m pip install ~/project/django-to-rest/`
+7. And then follow the [Quickstart Guide](../quickstart.md) for better understanding. Note that the project needs to be installed from the local machine and not from PyPi.
 
 See [GitHub's Fork a Repo Guide](https://docs.github.com/en/get-started/quickstart/fork-a-repo) for more help.
 
@@ -94,10 +97,22 @@ The documentation is made using [Material for Mkdocs](https://squidfunk.github.i
 
 Check [Material for Mkdocs](https://squidfunk.github.io/mkdocs-material/) for more help.
 
-Pull Requests
+Contribute and make pull request
 -------------
 
-All the contributions have to be made via a pull request. Check below links for more help about pull request:
+All the contributions have to be made via a pull request. After you have cloned the forked repository, follow below steps:
+
+1. Go into the project's directory (that is `django-to-rest`)
+2. Create a new branch using following command in the command line: `git branch new-branch-name`
+3. Checkout to the new branch using following command in the command line: `git checkout new-branch-name`
+4. Make the changes that you want to contribute
+5. Stage your changes using the following command in command line: `git command .`
+6. Check the status using the command: `git status`
+7. Commit your changes using the command: `git commit -m "commit message"`
+8. Push your changes to the remote branch on GitHub by using the following command: `git push -u origin branch_name`
+9. Open a pull request directed to our main branch
+
+For tutorials on pull request check below links:
 
 * [Github: About pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
 * [W3schools: Send Pull Request](https://www.w3schools.com/git/git_remote_send_pull_request.asp?remote=github)
