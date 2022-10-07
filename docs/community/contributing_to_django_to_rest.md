@@ -110,7 +110,7 @@ All the contributions have to be made via a pull request. After you have cloned 
 6. Check the status using the command: `git status`
 7. Commit your changes using the command: `git commit -m "commit message"`
 8. Push your changes to the remote branch on GitHub by using the following command: `git push -u origin branch_name`
-9. Open a pull request directed to our main branch
+9. Open a pull request directed to our `master` branch
 
 For tutorials on pull request check below links:
 
