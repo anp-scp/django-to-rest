@@ -8,6 +8,7 @@ on:
 jobs:
   build-test-publish:
     name: Publish Python distributions to PyPI and TestPyPI
+    if: "!contains(github.event.commits[0].message, '[skip ci]')" #so that when any docs change is made this can be skipped
     runs-on: ubuntu-latest
     steps:
       - 
