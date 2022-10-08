@@ -1,12 +1,13 @@
-name: Release
+name: CI
 on:
     push:
-      tags:
-        - "v*"
+      branches: [master]
+    pull_request:
+      branches: [master]
 
 jobs:
-  build-test-publish:
-    name: Publish Python distributions to PyPI and TestPyPI
+  build-test:
+    name: Build and run test
     runs-on: ubuntu-latest
     steps:
       - 
@@ -32,13 +33,3 @@ jobs:
           python3 manage.py test test_many_to_many
           python3 manage.py test test_many_to_one
           python3 manage.py test test_one_to_one
-      -
-        name: Build the distribution
-        run: |
-          python3 setup.py sdist
-      -
-        name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}

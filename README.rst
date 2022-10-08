@@ -148,7 +148,7 @@ an overview of the tool.
 
 .. |PyPI version| image:: https://badge.fury.io/py/django-to-rest.svg
    :target: https://badge.fury.io/py/django-to-rest
-.. |CI Passing| image:: https://github.com/anp-scp/django-to-rest/actions/workflows/release.yml/badge.svg
+.. |CI Passing| image:: https://github.com/anp-scp/django-to-rest/actions/workflows/ci.yml/badge.svg
 
 **Contributing**
 ----------------
