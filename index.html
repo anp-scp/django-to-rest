@@ -544,6 +544,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="full_guide/adding_custom_classes/" class="md-nav__link">
+        Adding custom views, viewsets, etc
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -697,7 +711,7 @@
 
 <p><img _=";" align="left" alt="Django To Rest" src="img/large_logo_black.png" width="300" /></p>
 <p>Django To Rest is small tool that helps to expose REST api(s) for
-django models with minimum effort. Some of the features are:</p>
+django models with minimum effort. This utility is for one who uses <code>Django REST Framework</code> for writing REST APIs. The tool enables you to focus only on the code needed explicitly. The tool handles all boilerplate. Some of the features are:</p>
 <ul>
 <li>Just add a decorator at top of a model and REST api(s) are created. That's the work!!!</li>
 <li>Options like filtering and ordering are avilable by default for model fields</li>
@@ -725,6 +739,12 @@ django models with minimum effort. Some of the features are:</p>
 </code></pre></div>
 <h2 id="example"><strong>Example</strong><a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>Let us have a look on an example of how the tool can be used to expose REST API.</p>
+<p>Let us assume that the following are the requirements:</p>
+<ol>
+<li>A polls app having certain questions and each question have some choices.</li>
+<li>All CRUD URLs for question and choice objects.</li>
+<li>We need an URL which simply increments a counter</li>
+</ol>
 <p>Make sure that <code>djangorestframework</code> is installed and included in <code>INSTALLED_APPS</code> in settings.py as shown below:
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">settings.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
 <span class="normal"><a href="#__codelineno-0-2">2</a></span>
@@ -796,35 +816,85 @@ Now create two models as shown below:
 <span class="normal"><a href="#__codelineno-2-3">3</a></span>
 <span class="normal"><a href="#__codelineno-2-4">4</a></span>
 <span class="normal"><a href="#__codelineno-2-5">5</a></span>
-<span class="normal"><a href="#__codelineno-2-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">to_rest</span> <span class="kn">import</span> <span class="n">utils</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4"></a>        <span class="o">...</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5"></a>        <span class="p">]</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="n">urlpatterns</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">restifyApp</span><span class="p">(</span><span class="s1">&#39;rest/v1&#39;</span><span class="p">))</span> <span class="c1"># (1)</span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span>
+<span class="normal"><a href="#__codelineno-2-7">7</a></span>
+<span class="normal"><a href="#__codelineno-2-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">to_rest</span> <span class="kn">import</span> <span class="n">utils</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">JsonResponse</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="o">...</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a>        <span class="p">]</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="n">urlpatterns</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">restifyApp</span><span class="p">(</span><span class="s1">&#39;rest/v1&#39;</span><span class="p">))</span> <span class="c1"># (1)</span>
 </code></pre></div></td></tr></table></div></p>
 <ol>
 <li>call this method to add the urls in url patterns. Here the parameter 'rest/v1' is the prefix to be used in the url.</li>
 </ol>
-<p>That's all. Now start the server. And check the dev url <code>http://127.0.0.1:8000/</code>. Below is an example with httpie:</p>
-<div class="highlight"><pre><span></span><code>$ http --json http://127.0.0.1:8000/
-HTTP/1.1 200 OK
-Allow: GET, HEAD, OPTIONS
-Content-Length: 356
-Content-Type: application/json
-Cross-Origin-Opener-Policy: same-origin
-Date: Thu, 07 Jul 2022 15:15:22 GMT
-Referrer-Policy: same-origin
-Server: WSGIServer/0.2 CPython/3.8.10
-Vary: Accept, Cookie
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-
+<p>That's all. All the above configurations will create the CRUD APIs for the classes that we marked using the decorator. For the 3rd requirement we can simply write a method the way we write in <code>Django</code> or <code>Django REST Framework</code>. We add the following lines in <code>urls.py</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> 
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">def</span> <span class="nf">counter</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="p">:</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="k">global</span> <span class="n">count</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="n">count</span><span class="p">})</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">urlpatterns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;count/&#39;</span><span class="p">,</span> <span class="n">counter</span><span class="p">))</span>
+</code></pre></div>
+<p>Now start the server. We add some data and check the dev url <code>http://127.0.0.1:8000/</code>. Below is an example with httpie:</p>
+<div class="highlight"><pre><span></span><code>$ http -b --unsorted http://127.0.0.1:8000/
 {
-    &quot;rest/v1/polls/choice&quot;: &quot;http://127.0.0.1:8000/rest/v1/polls/choice/&quot;,
-    &quot;rest/v1/polls/question&quot;: &quot;http://127.0.0.1:8000/rest/v1/polls/question/&quot;
+    &quot;rest/v1/polls/question&quot;: &quot;http://127.0.0.1:8000/rest/v1/polls/question&quot;,
+    &quot;rest/v1/polls/choice&quot;: &quot;http://127.0.0.1:8000/rest/v1/polls/choice&quot;
+}
+
+$ http -b --unsorted http://127.0.0.1:8000/rest/v1/polls/question
+[
+    {
+        &quot;id&quot;: 1,
+        &quot;question_text&quot;: &quot;How is the traffic?&quot;,
+        &quot;pub_date&quot;: &quot;2022-07-08T10:02:16.290713Z&quot;,
+        &quot;choices&quot;: &quot;/rest/v1/polls/question/1/choices&quot;
+    },
+    {
+        &quot;id&quot;: 2,
+        &quot;question_text&quot;: &quot;What&#39;s up?&quot;,
+        &quot;pub_date&quot;: &quot;2022-07-08T10:03:15.816192Z&quot;,
+        &quot;choices&quot;: &quot;/rest/v1/polls/question/2/choices&quot;
+    }
+]
+
+$ http -b --unsorted http://127.0.0.1:8000/rest/v1/polls/question/1/choices
+[
+    {
+        &quot;id&quot;: 1,
+        &quot;choice_text&quot;: &quot;Highly Conjested&quot;,
+        &quot;votes&quot;: 0,
+        &quot;question&quot;: 1
+    },
+    {
+        &quot;id&quot;: 2,
+        &quot;choice_text&quot;: &quot;Clear for miles&quot;,
+        &quot;votes&quot;: 0,
+        &quot;question&quot;: 1
+    }
+]
+
+$ http -b --unsorted http://127.0.0.1:8000/count/
+{
+    &quot;count&quot;: 1
+}
+
+$ http -b --unsorted http://127.0.0.1:8000/count/
+{
+    &quot;count&quot;: 2
+}
+
+$ http -b --unsorted http://127.0.0.1:8000/count/
+{
+    &quot;count&quot;: 3
 }
 </code></pre></div>
+<p>Here, we wrote extra code only for the <code>/count/</code> URL and other CRUD URLs where created by the utility.</p>
 <h2 id="quickstart"><strong>Quickstart</strong><a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h2>
 <p>The <a href="quickstart/">quick start guide</a> is a short tutorial which is the fastest way to get everything setup and get an overview of the tool.</p>
 <h2 id="contributing"><strong>Contributing</strong><a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
