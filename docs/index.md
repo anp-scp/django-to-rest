@@ -6,7 +6,7 @@ hide:
 ![Django To Rest](img/large_logo_black.png){ width="300"; align=left }
 
 Django To Rest is small tool that helps to expose REST api(s) for
-django models with minimum effort. This utility is for one who uses `Django REST Framework` for writing REST APIs. The tool enables you to focus only on the code needed explicitly. The tool handles all boilerplate. Some of the features are:
+django models with minimum effort. This utility is for one who uses `Django REST Framework` for writing REST APIs. The tool enables you to focus only on the code needed explicitly. The tool handles all boilerplate for writing CRUD APIs. Some of the features are:
 
 * Just add a decorator at top of a model and REST api(s) are created. That's the work!!!
 * Options like filtering and ordering are avilable by default for model fields
