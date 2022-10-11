@@ -15,6 +15,7 @@ nav:
     - full_guide/adding_custom_filtering.md
     - full_guide/adding_methods.md
     - full_guide/relationships.md
+    - full_guide/adding_custom_classes.md
   - 'Community':
     - community/contributing_to_django_to_rest.md
     - community/changelogs.md

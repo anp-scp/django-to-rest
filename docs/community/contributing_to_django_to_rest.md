@@ -21,7 +21,7 @@ Development
 
 To start developing:
 
-1. Fist create a fork
+1. First create a fork
 2. Clone your fork
 3. It is recommended to have a virtual environment
 4. Install `django 4.0.5`, `django-rest-framework 3.13.1` and `django-filter 22.1`

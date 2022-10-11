@@ -6,7 +6,7 @@
 [![PyPI version](https://badge.fury.io/py/django-to-rest.svg)](https://badge.fury.io/py/django-to-rest) ![CI Passing](https://github.com/anp-scp/django-to-rest/actions/workflows/ci.yml/badge.svg)
 * * *
 Django To Rest is small tool that helps to expose REST api(s) for
-django models with minimum effort. Some of the features are:
+django models with minimum effort. This utility is for one who uses `Django REST Framework` for writing REST APIs. The tool enables you to focus only on the code needed explicitly. The tool handles all boilerplate. Some of the features are:
 
 * Just add a decorator at top of a model and REST api(s) are created. That's the work!!!
 * Options like filtering and ordering are avilable by default for model fields
@@ -38,6 +38,12 @@ django-to-rest is published as a package and can be installed using pip. Install
 ## **Example**
 
 Let us have a look on an example of how the tool can be used to expose REST API.
+
+Let us assume that the following are the requirements:
+
+1. A polls app having certain questions and each question have some choices.
+2. All CRUD URLs for question and choice objects.
+3. We need an URL which simply increments a counter
 
 Make sure that `djangorestframework` is installed and included in `INSTALLED_APPS ` in settings.py as shown below:
 ```py title="settings.py" linenums="1"
@@ -77,7 +83,9 @@ class Choice(models.Model):
 
 Note the use of the decorators. We just need to use the decorator and all the views and serializers would be created during startup. But apart from that, we need one more line to add in `urls.py` of the project (not any app) as shown below:
 ```py title="urls.py" linenums="1"
+from django.urls import path
 from to_rest import utils
+from django.http import JsonResponse
 
 urlpatterns = [
         ...
@@ -85,25 +93,75 @@ urlpatterns = [
 urlpatterns.extend(utils.restifyApp('rest/v1')) # call this method to add the urls in url patterns. Here the parameter 'rest/v1' is the prefix to be used in the url.
 ```
 
-That's all. Now start the server. And check the dev url `http://127.0.0.1:8000/`. Below is an example with httpie:
+That's all. All the above configurations will create the CRUD APIs for the classes that we marked using the decorator. For the 3rd requirement we can simply write a method the way we write in `Django` or `Django REST Framework`. We add the following lines in `urls.py`:
 
-    $ http --json http://127.0.0.1:8000/
-    HTTP/1.1 200 OK
-    Allow: GET, HEAD, OPTIONS
-    Content-Length: 356
-    Content-Type: application/json
-    Cross-Origin-Opener-Policy: same-origin
-    Date: Thu, 07 Jul 2022 15:15:22 GMT
-    Referrer-Policy: same-origin
-    Server: WSGIServer/0.2 CPython/3.8.10
-    Vary: Accept, Cookie
-    X-Content-Type-Options: nosniff
-    X-Frame-Options: DENY
+```py
+count = 0 
 
+def counter(request) :
+    global count
+    if request.method == 'GET':
+        count += 1
+        return JsonResponse({'count': count})
+urlpatterns.append(path('count/', counter))
+```
+
+Now start the server. We add some data and check the dev url `http://127.0.0.1:8000/`. Below is an example with httpie:
+
+    $ http -b --unsorted http://127.0.0.1:8000/
     {
-        "rest/v1/polls/choice": "http://127.0.0.1:8000/rest/v1/polls/choice/",
-        "rest/v1/polls/question": "http://127.0.0.1:8000/rest/v1/polls/question/"
+        "rest/v1/polls/question": "http://127.0.0.1:8000/rest/v1/polls/question",
+        "rest/v1/polls/choice": "http://127.0.0.1:8000/rest/v1/polls/choice"
     }
+
+    $ http -b --unsorted http://127.0.0.1:8000/rest/v1/polls/question
+    [
+        {
+            "id": 1,
+            "question_text": "How is the traffic?",
+            "pub_date": "2022-07-08T10:02:16.290713Z",
+            "choices": "/rest/v1/polls/question/1/choices"
+        },
+        {
+            "id": 2,
+            "question_text": "What's up?",
+            "pub_date": "2022-07-08T10:03:15.816192Z",
+            "choices": "/rest/v1/polls/question/2/choices"
+        }
+    ]
+
+    $ http -b --unsorted http://127.0.0.1:8000/rest/v1/polls/question/1/choices
+    [
+        {
+            "id": 1,
+            "choice_text": "Highly Conjested",
+            "votes": 0,
+            "question": 1
+        },
+        {
+            "id": 2,
+            "choice_text": "Clear for miles",
+            "votes": 0,
+            "question": 1
+        }
+    ]
+
+    $ http -b --unsorted http://127.0.0.1:8000/count/
+    {
+        "count": 1
+    }
+
+    $ http -b --unsorted http://127.0.0.1:8000/count/
+    {
+        "count": 2
+    }
+
+    $ http -b --unsorted http://127.0.0.1:8000/count/
+    {
+        "count": 3
+    }
+
+Here, we wrote extra code only for the `/count/` URL and other CRUD URLs where created by the utility.
 
 ## **Quickstart**
 
