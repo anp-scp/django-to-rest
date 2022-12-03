@@ -2,67 +2,72 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/quickstart/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/community/changelogs/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/community/contributing_to_django_to_rest/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/adding_auth/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/adding_custom_classes/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/adding_custom_filtering/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/adding_custom_serializer/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/adding_methods/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/adding_permission/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/adding_throttling/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/marking_model_for_REST/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://anp-scp.github.io/django-to-rest/full_guide/relationships/</loc>
-         <lastmod>2022-10-11</lastmod>
+         <lastmod>2022-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://anp-scp.github.io/django-to-rest/full_guide/viewnames/</loc>
+         <lastmod>2022-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
