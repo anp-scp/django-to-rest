@@ -2,6 +2,9 @@
 title: Marking models to create REST APIs
 ---
 
+Marking custom models
+---------------------
+
 To create REST APIs for a model, first we need to mark the model. And to mark the model, use the decorator `to_rest.decorators.restifyModel`. The decorator can be used in the following two ways:
 
 1. **Without Parameters**: When used without parameters, all the defaults would be applied.
@@ -96,3 +99,19 @@ In the above example, a custom serializer has been created in `serializers.py`. 
 !!! Note
 
     All `ViewParams` classes must be in the module `view_params` in the directory of the app. That means, in the same location where `models.py` is located.  Django-to-rest will get the name of the `ViewParams` class from the decorator and will search that class in the module `view_params.` Hence, in the example above, `CustomSerializer` is created in `view_params.py`.
+
+
+Marking models provided by Django
+---------------------------------
+
+To create REST APIs for models provided by django, the models can be marked as follows:
+
+```py title="models.py" linenums="1"
+from django.db import models
+from to_rest.decorators import restifyModel
+from django.contrib.auth.models import User, Permission
+
+# Create your models here.
+User = restifyModel(User)
+Permission = restifyModel(Permission)
+```
