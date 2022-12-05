@@ -67,19 +67,13 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#marking-custom-models" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
-      
-        <aside class="md-banner">
-          <div class="md-banner__inner md-grid md-typeset">
-            
-            
-  <!-- Add announcement here, including arbitrary HTML -->
-  NOTE: This is a beta version. A stable version is yet to be released.
-
-          </div>
-          
-        </aside>
       
     </div>
     
@@ -375,9 +369,45 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Marking models to create REST APIs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Marking models to create REST APIs
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#marking-custom-models" class="md-nav__link">
+    Marking custom models
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#marking-models-provided-by-django" class="md-nav__link">
+    Marking models provided by Django
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -510,6 +540,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../versioning/" class="md-nav__link">
+        Note on API versioning
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -596,6 +640,28 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#marking-custom-models" class="md-nav__link">
+    Marking custom models
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#marking-models-provided-by-django" class="md-nav__link">
+    Marking models provided by Django
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -616,6 +682,7 @@
 
   <h1>Marking models to create REST APIs</h1>
 
+<h2 id="marking-custom-models">Marking custom models<a class="headerlink" href="#marking-custom-models" title="Permanent link">&para;</a></h2>
 <p>To create REST APIs for a model, first we need to mark the model. And to mark the model, use the decorator <code>to_rest.decorators.restifyModel</code>. The decorator can be used in the following two ways:</p>
 <ol>
 <li>
@@ -762,6 +829,22 @@ For example:</p>
 <p class="admonition-title">Note</p>
 <p>All <code>ViewParams</code> classes must be in the module <code>view_params</code> in the directory of the app. That means, in the same location where <code>models.py</code> is located.  Django-to-rest will get the name of the <code>ViewParams</code> class from the decorator and will search that class in the module <code>view_params.</code> Hence, in the example above, <code>CustomSerializer</code> is created in <code>view_params.py</code>.</p>
 </div>
+<h2 id="marking-models-provided-by-django">Marking models provided by Django<a class="headerlink" href="#marking-models-provided-by-django" title="Permanent link">&para;</a></h2>
+<p>To create REST APIs for models provided by django, the models can be marked as follows:</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">models.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span>
+<span class="normal"><a href="#__codelineno-4-5">5</a></span>
+<span class="normal"><a href="#__codelineno-4-6">6</a></span>
+<span class="normal"><a href="#__codelineno-4-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">to_rest.decorators</span> <span class="kn">import</span> <span class="n">restifyModel</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Permission</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="c1"># Create your models here.</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="n">User</span> <span class="o">=</span> <span class="n">restifyModel</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">Permission</span> <span class="o">=</span> <span class="n">restifyModel</span><span class="p">(</span><span class="n">Permission</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
 
 
 
