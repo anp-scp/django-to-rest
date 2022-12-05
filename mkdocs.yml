@@ -17,6 +17,7 @@ nav:
     - full_guide/relationships.md
     - full_guide/viewnames.md
     - full_guide/adding_custom_classes.md
+    - full_guide/versioning.md
   - 'Community':
     - community/contributing_to_django_to_rest.md
     - community/changelogs.md
