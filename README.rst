@@ -42,8 +42,8 @@ boilerplate for writing CRUD APIs. Some of the features are:
 Django to Rest need following requirements :
 
 -  Python 3.8+
--  Django 4.0.5
--  djangorestframework 3.13.1
+-  Django 4.0.5+
+-  djangorestframework 3.13.1+
 -  django-filter 22.1
 
 --------------
