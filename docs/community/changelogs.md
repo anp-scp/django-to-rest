@@ -1,6 +1,13 @@
 ---
 title: Changelogs
 ---
+Django-to-rest 1.1.0
+----------------------
+* Django 4.1 support
+* djangorestframework 3.14 support
+* API Versioning
+* Updated docs
+
 Django-to-rest 1.0.0b2
 ----------------------
 * Fixed readme.rst file
