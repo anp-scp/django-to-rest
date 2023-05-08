@@ -5,7 +5,7 @@
 * * *
 [![PyPI version](https://badge.fury.io/py/django-to-rest.svg)](https://badge.fury.io/py/django-to-rest) ![CI Passing](https://github.com/anp-scp/django-to-rest/actions/workflows/ci.yml/badge.svg)
 * * *
-Django To Rest is small tool that helps to expose REST api(s) for
+Django To Rest is a small tool that helps to expose REST api(s) for
 django models with minimum effort. This utility is for one who uses `Django REST Framework` for writing REST APIs. The tool enables you to focus only on the code needed explicitly. The tool handles all boilerplate for writing CRUD APIs. Some of the features are:
 
 * Just add a decorator at top of a model and REST api(s) are created. That's the work!!!
